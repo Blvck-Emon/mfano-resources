@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mfano Bora Resources - Admin Panel</title>
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+<div class="container">
+  <h1>Mfano Bora Resources - Admin Panel</h1>
+  <p class="subtitle">Upload and manage PDFs and resources for the website.</p>
+
+  <!-- ADMIN KEY -->
+  <div class="card key-card">
+    <label for="apiKey"><strong>Admin API Key:</strong></label>
+    <input type="password" id="apiKey" placeholder="Paste your admin key" autocomplete="off">
+    <p class="hint">Stored only in this browser tab (sessionStorage), never in the page source.</p>
+  </div>
+
+  <!-- CREATE FORM -->
+  <div class="card">
+    <h2>Add New Resource</h2>
+    <p id="message" class="message"></p>
+
+    <form id="resourceForm">
+      <div class="field">
+        <label for="title">Resource Title:</label>
+        <input type="text" id="title" required placeholder="e.g., Industrial Attachment Application Form 2026">
+      </div>
+
+      <div class="field">
+        <label for="subCategory">Category &amp; Sub-Category:</label>
+        <select id="subCategory" required>
+          <option value="">Select Sub-Category</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="fileUrl">Document URL (AWS S3 or Cloudinary):</label>
+        <input type="url" id="fileUrl" required placeholder="https://storage.mfanoboraafrica.com/docs/attachment-form.pdf">
+      </div>
+
+      <div class="field">
+        <label for="description">Description:</label>
+        <textarea id="description" required placeholder="Provide a concise summary of the document content..."></textarea>
+      </div>
+
+      <div class="field checkbox-field">
+        <label>
+          <input type="checkbox" id="isFeatured">
+          Mark as "Featured Resource" on Hero Banner
+        </label>
+      </div>
+
+      <button type="submit" id="submitBtn">Add Resource</button>
+    </form>
+  </div>
+
+  <!-- EXISTING RESOURCES -->
+  <h2>Existing Resources (<span id="resourceCount">0</span>)</h2>
+  <table id="resourceTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Category</th>
+        <th>Downloads</th>
+        <th>Featured</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="resourceTableBody"></tbody>
+  </table>
+</div>
+
+<script src="js/admin.js"></script>
+</body>
+</html>

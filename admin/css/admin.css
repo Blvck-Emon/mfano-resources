@@ -1,0 +1,146 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #f7f7f8;
+  color: #1a1a1a;
+  margin: 0;
+  padding: 24px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h1 {
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  color: #666;
+  margin-top: 0;
+}
+
+.card {
+  background: #f5f5f5;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.key-card {
+  background: #fff8e1;
+  border: 1px solid #f0c419;
+}
+
+.key-card input {
+  width: 100%;
+  max-width: 420px;
+  padding: 8px;
+  margin-top: 4px;
+}
+
+.hint {
+  color: #8a6d00;
+  font-size: 0.85em;
+  margin-bottom: 0;
+}
+
+.field {
+  margin-bottom: 15px;
+}
+
+.field label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.field input[type="text"],
+.field input[type="url"],
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+.field textarea {
+  height: 80px;
+  resize: vertical;
+}
+
+.checkbox-field label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+button {
+  padding: 10px 20px;
+  background: #0056b3;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.message {
+  font-weight: bold;
+}
+
+.message.error {
+  color: #c0392b;
+}
+
+.message.success {
+  color: #2e7d32;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  background: #fff;
+}
+
+thead tr {
+  background: #333;
+  color: #fff;
+}
+
+th, td {
+  padding: 10px;
+}
+
+tbody tr {
+  border-bottom: 1px solid #ddd;
+}
+
+td.title-cell {
+  font-weight: bold;
+}
+
+td a {
+  margin-right: 10px;
+  color: #0056b3;
+}
+
+td button.delete-btn {
+  background: none;
+  color: #c0392b;
+  padding: 4px 8px;
+}
