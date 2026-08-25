@@ -1,0 +1,11 @@
+id,category_id,name,slug,description,created_at
+1,1,"Attachment Guides & Forms",attachment-guides,"Application forms, logbook guides, and checklists.",2026-08-25T06:00:57.765Z
+2,2,"Career Guides & Prep",career-prep,"CV writing, interview prep, and professional ethics.",2026-08-25T06:00:57.765Z
+3,3,"Digital Skills & Safety",digital-skills,"Basic computer skills, internet safety, and AI awareness.",2026-08-25T06:00:57.765Z
+4,4,"ICT Training Catalogues",ict-catalogues,"Course catalogues and registration materials for the ICT Hub.",2026-08-25T06:00:57.765Z
+5,5,"Logistics & Fleet Management",logistics-management,"Operations guides, industry overviews, and best practices.",2026-08-25T06:00:57.765Z
+6,6,"Road Safety Awareness",road-safety-awareness,"Awareness guides, pedestrian safety, and campaign materials.",2026-08-25T06:00:57.765Z
+7,7,"Awards Documentation",awards-docs,"Nomination guides, judging criteria, and sponsorship brochures.",2026-08-25T06:00:57.765Z
+8,8,"Corporate Publications",corporate-pubs,"Annual reports, CSR reports, and brand profiles.",2026-08-25T06:00:57.765Z
+9,9,"Standard Forms",standard-forms,"Blank templates and standard request forms.",2026-08-25T06:00:57.765Z
+10,10,"Industry Reports & Insights",industry-reports,"In-depth research covering transport, youth employment, and ICT.",2026-08-25T06:00:57.765Z
