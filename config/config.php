@@ -14,7 +14,7 @@ return [
 
     // Generated with: php -r "echo bin2hex(random_bytes(24));"
     // Replace before deploying anywhere other people can reach.
-    'admin_api_key' => 'php -r "echo bin2hex(random_bytes(24));"',
+    'admin_api_key' => '46fa877528d8ffc67aef17cb27143802acc08ec0615f763e',
 
     'allowed_origin' => 'https://mfanobora.com',
 
