@@ -1,29 +1,26 @@
 <?php
 /**
- * config/config.example.php
+ * config/config.php
  *
- * Copy this file to config/config.php on the server and fill in real
- * values. config/config.php should NEVER be committed to git (it's in
- * .gitignore) since it holds database credentials and the admin secret.
+ * Local/demo configuration for the SQLite-backed build. In a real
+ * deployment this file stays out of git (see .gitignore) and each
+ * environment generates its own admin_api_key.
  */
 
 return [
-    // Database connection (same Postgres database used by the Node backend —
-    // this refactor only changes the API layer, not the data layer).
     'db' => [
-        'host'     => 'localhost',
-        'port'     => '5432',
-        'dbname'   => 'mfano_bora_db',
-        'user'     => 'postgres',
-        'password' => 'postgres',
+        'path' => __DIR__ . '/../database/mfano_bora.sqlite',
     ],
 
-    // Shared secret the admin dashboard must send as the `X-Api-Key` header
-    // on every request to /api/admin/*.php. Generate one with:
-    //   php -r "echo bin2hex(random_bytes(24));"
-    'admin_api_key' => '8b68b91c7de9e6cf4a0cb529306a54e2554846e20c028e7b',
+    // Generated with: php -r "echo bin2hex(random_bytes(24));"
+    // Replace before deploying anywhere other people can reach.
+    'admin_api_key' => 'php -r "echo bin2hex(random_bytes(24));"',
 
-    // Set to your main site's origin if the resources portal will ever be
-    // called from a different subdomain. Use '*' only for local testing.
     'allowed_origin' => 'https://mfanobora.com',
+
+    'uploads' => [
+        'dir'        => __DIR__ . '/../uploads/resources',
+        'url_prefix' => '/uploads/resources',
+        'max_bytes'  => 25 * 1024 * 1024,
+    ],
 ];
