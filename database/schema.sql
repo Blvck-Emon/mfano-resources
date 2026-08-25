@@ -17,6 +17,18 @@
 PRAGMA foreign_keys = ON;
 PRAGMA journal_mode = WAL;
 
+-- --------------------------------------------------------------------------
+-- Application settings / key-value store (for admin_api_key, feature flags)
+-- Simple key/value store for small application secrets and flags[cite: 16].
+-- --------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS settings (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    name       TEXT NOT NULL UNIQUE,
+    value      TEXT,
+    created_at TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%fZ', 'now')),
+    updated_at TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);
+
 -- 1. Categories Table
 CREATE TABLE IF NOT EXISTS categories (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
