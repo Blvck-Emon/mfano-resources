@@ -30,20 +30,24 @@ if (!$categoryId || !$name || !$slug) {
 }
 
 try {
-    $stmt = $pdo->prepare(
+    $insert = $pdo->prepare(
         'INSERT INTO sub_categories (category_id, name, slug, description)
-         VALUES (:category_id, :name, :slug, :description) RETURNING *'
+         VALUES (:category_id, :name, :slug, :description)'
     );
-    $stmt->execute([
+    $insert->execute([
         'category_id' => $categoryId,
         'name'        => $name,
         'slug'        => $slug,
         'description' => $description,
     ]);
 
-    sendSuccess($stmt->fetch(), null, 201);
+    $newId = (int) $pdo->lastInsertId();
+    $row = $pdo->prepare('SELECT * FROM sub_categories WHERE id = :id');
+    $row->execute(['id' => $newId]);
+
+    sendSuccess($row->fetch(), null, 201);
 } catch (PDOException $e) {
-    if ($e->getCode() === '23505') {
+    if (($e->errorInfo[1] ?? null) === 19) {
         sendError('A sub-category with that slug already exists.', 409);
     }
     error_log($e->getMessage());
