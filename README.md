@@ -219,9 +219,3 @@ http://127.0.0.1:8000/api/health.php
 * `admin/index.html`, `admin/js/admin.js` — admin frontend and API integration. 
 
 ---
-
-If you want, I can:
-
-* Drop this exact content into your uploaded `README.md` (I can prepare the file content for you to copy or save), or
-* Produce a one-page `QUICKSTART.md` with only the minimal commands for a new developer, or
-* Create the exact `curl` multipart example for uploading a local file after I inspect `api/admin/resources.php` and `includes/upload.php` to confirm the exact field names.
