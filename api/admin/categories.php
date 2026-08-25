@@ -29,15 +29,20 @@ if (!$name || !$slug) {
 }
 
 try {
-    $stmt = $pdo->prepare(
-        'INSERT INTO categories (name, slug, description) VALUES (:name, :slug, :description) RETURNING *'
+    $insert = $pdo->prepare(
+        'INSERT INTO categories (name, slug, description) VALUES (:name, :slug, :description)'
     );
-    $stmt->execute(['name' => $name, 'slug' => $slug, 'description' => $description]);
+    $insert->execute(['name' => $name, 'slug' => $slug, 'description' => $description]);
 
-    sendSuccess($stmt->fetch(), null, 201);
+    $newId = (int) $pdo->lastInsertId();
+    $row = $pdo->prepare('SELECT * FROM categories WHERE id = :id');
+    $row->execute(['id' => $newId]);
+
+    sendSuccess($row->fetch(), null, 201);
 } catch (PDOException $e) {
-    // Postgres unique_violation
-    if ($e->getCode() === '23505') {
+    // SQLite's UNIQUE constraint violation surfaces as SQLSTATE 23000 /
+    // driver code 19 (was Postgres' unique_violation, '23505').
+    if (($e->errorInfo[1] ?? null) === 19) {
         sendError('A category with that name or slug already exists.', 409);
     }
     error_log($e->getMessage());
