@@ -1,241 +1,229 @@
-# Mfano Bora Resources Portal - Backend & Admin Documentation
+# README — Mfano Bora Resources Portal 
+## What is this
 
-The Mfano Bora Resources Portal is a lightweight, backend API and administration system built to manage and serve corporate, educational, and operational digital resources across 10 core organizational categories. It utilizes native PHP with PDO, PostgreSQL, and a zero-build vanilla JavaScript/CSS dashboard.
+A lightweight PHP backend + admin UI to manage and serve digital resources (PDFs, guides, templates) grouped in categories and sub-categories. The app exposes public REST endpoints and protected admin endpoints guarded by a shared admin API key.
 
----
-
-## System Overview & Architecture
-
-The system serves public clients via REST endpoints and provides secure administrative CRUD capabilities for content managers.
-
-* **Data Layer:** PostgreSQL database utilizing indexing for full-text search (`to_tsvector`) and foreign key relations (`categories` $\rightarrow$ `sub_categories` $\rightarrow$ `resources`).
-
-
-* **API Layer:** PHP scripts processing standard HTTP methods (GET, POST, PUT, DELETE) and returning structured JSON payloads.
-
-
-* **Admin Dashboard:** A standalone web portal (`admin/index.html`) using HTML5, CSS, and Vanilla JS.
-
-
-* **Authentication:** Stateless API authentication using a shared secret key passed via the `X-Api-Key` HTTP header.
-
-
+Files and structure are in the `mfano-resources/` folder; a compact project index is included in the compiled resources. 
 
 ---
 
-## Directory Structure
+## Quick architecture summary
 
-```text
-mfano-resources/
-├── config/                  # Server & database configuration files
-│   ├── config.example.php   # Configuration template
-│   ├── config.php           # Active environment settings (git-ignored)
-│   └── db.php               # Shared PDO database connection handler
-├── database/                # Relational data definitions and seed data
-│   ├── schema.sql           # Database structure & indexes
-│   └── seed.sql             # Default categories, subcategories & resources
-├── api/                     # Public REST API endpoints
-│   ├── categories.php       # Retrieve category/subcategory tree
-│   ├── resources.php        # Resource listing, filtering & search
-│   ├── health.php           # Server uptime check endpoint
-│   └── admin/               # Authenticated administrative endpoints
-│       ├── categories.php   # Category management
-│       ├── subcategories.php# Sub-category management
-│       └── resources.php    # Resource CRUD operations
-├── includes/                # Common helper scripts
-│   ├── auth.php             # X-Api-Key authorization guard
-│   └── helpers.php          # JSON responses & CORS functions
-└── admin/                   # Web-based Admin Dashboard
-    ├── index.html           # Admin dashboard markup
-    ├── css/admin.css        # Stylesheet
-    └── js/admin.js          # Admin API integration script
-
-```
+* Data: SQLite (development) — tables: `categories`, `sub_categories`, `resources`, `download_logs`, etc. (schema in `database/schema.sql`).
+* Backend: native PHP scripts exposing REST endpoints in `/api/`.
+* Admin UI: static frontend at `/admin/index.html` that calls the admin API endpoints using an `X-Api-Key` header (see `config/config.example.php`). 
 
 ---
 
-## Database Creation & Setup
+## Prerequisites
 
-The database requires PostgreSQL with the `uuid-ossp` extension enabled.
+* PHP (>= 8 recommended) with PDO + SQLite (or pdo_pgsql if you deploy with PostgreSQL).
+* `sqlite3` (for development), `curl` (optional), a browser.
+* (Optional for production) Apache/Nginx and PHP-FPM.
 
-### 1. Create Database
+---
 
-Open your terminal or PostgreSQL manager (e.g., DBeaver or `psql`) and execute:
-
-```sql
-CREATE DATABASE mfano_bora_db;
-
-```
-
-### 2. Execute Database Schema
-
-Run `database/schema.sql` against your target database to construct the table hierarchy and search indexes:
+## 1) Clone the repo
 
 ```bash
-psql -U postgres -d mfano_bora_db -f database/schema.sql
-
-```
-
-### 3. Deploy Seed Data
-
-Deploy `database/seed.sql` to populate the 10 core categories, sub-categories, and default resource records:
-
-```bash
-psql -U postgres -d mfano_bora_db -f database/seed.sql
-
+git clone <your-repo-url> mfano-resources
+cd mfano-resources
 ```
 
 ---
 
-## Backend PHP Configuration
+## 2) Setup — automatic (recommended for dev)
 
-### 1. Environment Configuration
+There are helper scripts included:
 
-Create the runtime configuration file by copying the example file:
+### Linux / macOS (one-step)
+
+1. Make the script executable and run it:
+
+```bash
+chmod +x ./mfano_setup_and_run_improved.sh
+./mfano_setup_and_run_improved.sh
+```
+
+What it does (high level): checks required tools, creates `database/mfano_bora.sqlite` if missing, applies `database/schema.sql`, offers to load `database/seed.sql`, creates `config/config.php` from the example, generates an admin API key if needed, exports CSV snapshots and starts the built-in PHP server. The script also launches the admin frontend in your browser. (See `mfano_setup_and_run_improved.sh`.) 
+
+### Windows (Git Bash / WSL) — convenience script
+
+Run:
+
+```bash
+chmod +x ./mfano_setup_and_run_windows.sh
+./mfano_setup_and_run_windows.sh
+# or, use the PowerShell script:
+./mfano_setup_and_run_windows.ps1
+```
+
+The Windows scripts create folders, apply schema, copy `config.example` to `config.php` as needed, and insert a generated admin key into the DB if missing. Example: the Windows script inserts an `admin_api_key` into the `settings` table. 
+
+---
+
+## 3) Manual setup (if you prefer to do steps yourself)
+
+### Apply the schema
+
+```bash
+# for sqlite (dev)
+sqlite3 database/mfano_bora.sqlite < database/schema.sql
+```
+
+(If you deploy with Postgres, run `psql -U <user> -d <db> -f database/schema.sql` and adjust `config/config.php`.) 
+
+### Seed data (optional)
+
+```bash
+sqlite3 database/mfano_bora.sqlite < database/seed.sql
+```
+
+The seed file contains the default 10 categories, sub-categories and example resources. 
+
+### Create config
+
+Copy the example and update DB settings / domain / allowed origin:
 
 ```bash
 cp config/config.example.php config/config.php
-
+# edit config/config.php: set DB path/credentials & admin_api_key & allowed_origin
 ```
 
-### 2. Configure Settings
+The example shows the `admin_api_key` entry in the example config. 
 
-Update `config/config.php` with your local database credentials and domain origins:
+---
 
-```php
-return [
-    'db' => [
-        'host'     => 'localhost',
-        'port'     => '5432',
-        'dbname'   => 'mfano_bora_db',
-        'user'     => 'postgres',
-        'password' => 'your_db_password',
-    ],
-    'admin_api_key'  => 'YOUR_SECURE_GENERATED_KEY',
-    'allowed_origin' => 'https://mfanobora.com', // Use '*' for local testing
-];
+## 4) Generate & copy the Admin API key
 
-```
+You have two places where an admin key may live:
 
-### 3. Generate Secret Admin API Key
+1. **In `config/config.php`** — when the example contained a placeholder you should replace it with a generated key. The example shows where to place `admin_api_key`. 
 
-Generate a secure random 48-character hex string using PHP CLI:
+2. **In the `settings` table inside the SQLite DB** — the setup scripts may insert the key into the DB under `settings.name = 'admin_api_key'`. Example insertion logic is present in the helper scripts. 
+
+### Generate a secure key (48 hex chars)
 
 ```bash
 php -r "echo bin2hex(random_bytes(24));"
-
 ```
 
-Assign this key string to `'admin_api_key'` in `config/config.php`.
+Use the printed value as your `admin_api_key`. 
 
----
-
-## Running & Deploying the Backend Server
-
-### Prerequisites
-
-* PHP 8.0 or higher with `pdo_pgsql` enabled.
-
-
-* PostgreSQL service running.
-
-
-
-### Running Locally (PHP Built-in Server)
-
-To start a lightweight local development server from the project root:
+### Copy from SQLite (if the setup inserted it there)
 
 ```bash
-php -S localhost:8000
-
+sqlite3 database/mfano_bora.sqlite "SELECT value FROM settings WHERE name='admin_api_key' LIMIT 1;"
 ```
 
-* **Public API:** `http://localhost:8000/api/resources.php`
+This will print the key inserted by the setup scripts (if present). 
 
-* **Admin Dashboard:** `http://localhost:8000/admin/index.html`
+### Or: place it in `config/config.php`
 
+Open `config/config.php` and set:
 
-### Production Server (Apache / Nginx / XAMPP)
+```php
+'admin_api_key' => 'paste-your-generated-key-here',
+```
 
-1. Ensure the `pdo_pgsql` extension is enabled in your `php.ini` file.
-
-
-2. Upload the `mfano-resources` directory to your web server document root (e.g., `/var/www/html/` or `/opt/lampp/htdocs/`).
-
-
-3. Verify directory access permissions so Apache/Nginx can execute the PHP scripts.
-
-
+Make sure `config/config.php` is protected (it’s typically gitignored).
 
 ---
 
-## Integrating Backend to Main Mfano Bora Root
+## 5) Run the application (dev)
 
-To attach this portal to the primary Mfano Bora website root:
+From the project root:
 
-### Option A: Subdirectory Deployment
-
-Move the entire compiled folder into a subdirectory within the main website root folder:
-
-```text
-[Main Website Root]/
-├── index.html
-├── assets/
-└── resources-portal/   <-- Compiled backend & admin folder
-
+```bash
+# Start PHP built-in server
+php -S 127.0.0.1:8000 -t .
+# Admin UI: http://127.0.0.1:8000/admin/index.html
+# Public API health: http://127.0.0.1:8000/api/health.php
 ```
 
-### Option B: API Path Configuration
+The improved setup script will automatically start the same built-in server and wait for the health endpoint before opening the admin. 
 
-If deploying API endpoints to a custom subfolder path (e.g., `/resources-portal/api`), open `admin/js/admin.js` and update the base endpoint constant:
+---
 
-```javascript
-// Update API_BASE path relative to site root
-const API_BASE = '/resources-portal/api'; 
+## 6) Add a document / resource
+
+There are two common ways to add resources:
+
+### A) Admin Dashboard (recommended)
+
+Open the admin UI in your browser:
 
 ```
+http://127.0.0.1:8000/admin/index.html
+```
 
-### Option C: Reverse Proxy (Nginx Configuration)
+Sign/authorize with the admin key (the admin UI sends the `X-Api-Key` header). Use the UI forms to create a category / sub-category or upload a resource. The UI calls the admin endpoints under `/api/admin/`. 
 
-For unified domain setups, route `/api/` and `/admin/` requests to the resource portal server instance:
+### B) Direct API (curl) — POST a new resource
 
-```nginx
-location /api/ {
-    proxy_pass http://127.0.0.1:8000/api/;
-    proxy_set_header Host $host;
-}
+The `resources` table expects fields such as `sub_category_id`, `title`, `description`, `file_url` (or use local upload). The seed SQL shows example inserts using `(sub_category_id, title, description, file_url, is_featured)` which reflects the API’s expected fields when creating a resource. Use the admin endpoint and include `X-Api-Key`. 
 
-location /admin/ {
-    proxy_pass http://127.0.0.1:8000/admin/;
-    proxy_set_header Host $host;
-}
+Example (external file URL):
 
+```bash
+curl -X POST "http://127.0.0.1:8000/api/admin/resources.php" \
+  -H "X-Api-Key: your_admin_key_here" \
+  -F "sub_category_id=1" \
+  -F "title=My Document Title" \
+  -F "description=Short description" \
+  -F "file_url=https://example.com/path/to/doc.pdf" \
+  -F "is_featured=0"
+```
+
+If you want to upload a file to be stored locally, use the admin UI (it handles file multipart upload) or check `includes/upload.php` and `api/admin/resources.php` to see how the backend expects the multipart file and fields (the code supports `storage_type = 'local'` and `stored_path` for local uploads). The `resources` schema includes `storage_type`, `stored_path`, `checksum_sha256` for local uploads. 
+
+---
+
+## 7) Useful queries (inspection & troubleshooting)
+
+* Show categories count (sqlite):
+
+```bash
+sqlite3 database/mfano_bora.sqlite "SELECT COUNT(*) FROM categories;"
+```
+
+* Read current `admin_api_key` from DB:
+
+```bash
+sqlite3 database/mfano_bora.sqlite "SELECT value FROM settings WHERE name='admin_api_key' LIMIT 1;"
+```
+
+(Setup scripts insert or replace this entry when creating the DB/config.) 
+
+* Health endpoint:
+
+```
+http://127.0.0.1:8000/api/health.php
 ```
 
 ---
 
-## API Endpoints Reference
+## Tips & security
 
-| Category | Method | Endpoint | Description | Headers / Auth |
-| --- | --- | --- | --- | --- |
-| **Public** | `GET` | `/api/health.php` | System status check
+* Never commit `config/config.php` with a real `admin_api_key` to source control. Use environment-specific config and keep secrets out of the repo. The example config shows the placeholder field to replace. 
+* For production, run behind Nginx/Apache and enforce HTTPS. Consider moving to PostgreSQL for larger deployments (the original design supported Postgres). 
 
- | None |
-| **Public** | `GET` | `/api/categories.php` | Full category/subcategory tree
+---
 
- | None |
-| **Public** | `GET` | `/api/resources.php` | Filter/search published resources
+## Where in the repo to look for details
 
- | None |
-| **Public** | `POST` | `/api/resources.php?id={id}&action=download` | Increment resource download count
+* `mfano_setup_and_run_improved.sh` — end-to-end dev setup + server entrypoint. 
+* `database/schema.sql` — DB structure and triggers. 
+* `database/seed.sql` — example categories/subcategories/resources. 
+* `config/config.example.php` — example runtime settings incl. `admin_api_key`. 
+* `admin/index.html`, `admin/js/admin.js` — admin frontend and API integration. 
 
- | None |
-| **Admin** | `POST` | `/api/admin/resources.php` | Create new resource
+---
 
- | `X-Api-Key`<br> |
-| **Admin** | `PUT` | `/api/admin/resources.php?id={id}` | Update existing resource
+If you want, I can:
 
- | `X-Api-Key`<br> |
-| **Admin** | `DELETE` | `/api/admin/resources.php?id={id}` | Remove resource
+* Drop this exact content into your uploaded `README.md` (I can prepare the file content for you to copy or save), or
+* Produce a one-page `QUICKSTART.md` with only the minimal commands for a new developer, or
+* Create the exact `curl` multipart example for uploading a local file after I inspect `api/admin/resources.php` and `includes/upload.php` to confirm the exact field names.
 
- | `X-Api-Key`<br> |
+Which of those would you like next?
