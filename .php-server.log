@@ -1,87 +1,134 @@
-[Tue Aug 25 09:25:58 2026] PHP Warning:  PHP Startup: Unable to load dynamic library 'pdo_sqlite' (tried: /usr/lib/php/20230831/pdo_sqlite (/usr/lib/php/20230831/pdo_sqlite: cannot open shared object file: No such file or directory), /usr/lib/php/20230831/pdo_sqlite.so (/usr/lib/php/20230831/pdo_sqlite.so: undefined symbol: php_pdo_unregister_driver)) in Unknown on line 0
-[Tue Aug 25 09:25:58 2026] PHP Warning:  Module "sqlite3" is already loaded in Unknown on line 0
-[Tue Aug 25 09:25:58 2026] PHP 8.3.6 Development Server (http://127.0.0.1:8000) started
-[Tue Aug 25 09:25:59 2026] 127.0.0.1:36620 Accepted
-[Tue Aug 25 09:25:59 2026] 127.0.0.1:36620 [200]: GET /api/health.php
-[Tue Aug 25 09:25:59 2026] 127.0.0.1:36620 Closing
-[Tue Aug 25 09:26:00 2026] 127.0.0.1:36622 Accepted
-[Tue Aug 25 09:26:00 2026] 127.0.0.1:36622 [200]: GET /admin/index.html
-[Tue Aug 25 09:26:00 2026] 127.0.0.1:36622 Closing
-[Tue Aug 25 09:26:00 2026] 127.0.0.1:36636 Accepted
-[Tue Aug 25 09:26:00 2026] 127.0.0.1:36636 [200]: GET /admin/css/admin.css
-[Tue Aug 25 09:26:00 2026] 127.0.0.1:36642 Accepted
-[Tue Aug 25 09:26:00 2026] 127.0.0.1:36642 [200]: GET /admin/js/admin.js
-[Tue Aug 25 09:26:00 2026] 127.0.0.1:36636 Closing
-[Tue Aug 25 09:26:00 2026] 127.0.0.1:36642 Closing
-[Tue Aug 25 09:26:01 2026] 127.0.0.1:36646 Accepted
-[Tue Aug 25 09:26:01 2026] 127.0.0.1:36660 Accepted
-[Tue Aug 25 09:26:01 2026] 127.0.0.1:36646 [200]: GET /api/categories.php
-[Tue Aug 25 09:26:01 2026] 127.0.0.1:36646 Closing
-[Tue Aug 25 09:26:01 2026] 127.0.0.1:36660 [200]: GET /api/resources.php
-[Tue Aug 25 09:26:01 2026] 127.0.0.1:36660 Closing
-[Tue Aug 25 09:26:02 2026] 127.0.0.1:36670 Accepted
-[Tue Aug 25 09:26:02 2026] 127.0.0.1:36670 [404]: GET /favicon.ico - No such file or directory
-[Tue Aug 25 09:26:02 2026] 127.0.0.1:36670 Closing
-[Tue Aug 25 09:29:39 2026] 127.0.0.1:35942 Accepted
-[Tue Aug 25 09:29:39 2026] 127.0.0.1:35942 [200]: GET /admin/index.html
-[Tue Aug 25 09:29:39 2026] 127.0.0.1:35942 Closing
-[Tue Aug 25 09:29:39 2026] 127.0.0.1:35954 Accepted
-[Tue Aug 25 09:29:39 2026] 127.0.0.1:35966 Accepted
-[Tue Aug 25 09:29:39 2026] 127.0.0.1:35954 [200]: GET /admin/css/admin.css
-[Tue Aug 25 09:29:39 2026] 127.0.0.1:35966 [200]: GET /admin/js/admin.js
-[Tue Aug 25 09:29:39 2026] 127.0.0.1:35954 Closing
-[Tue Aug 25 09:29:39 2026] 127.0.0.1:35966 Closing
-[Tue Aug 25 09:29:41 2026] 127.0.0.1:35980 Accepted
-[Tue Aug 25 09:29:41 2026] 127.0.0.1:35982 Accepted
-[Tue Aug 25 09:29:41 2026] 127.0.0.1:35980 [200]: GET /api/categories.php
-[Tue Aug 25 09:29:41 2026] 127.0.0.1:35980 Closing
-[Tue Aug 25 09:29:41 2026] 127.0.0.1:35982 [200]: GET /api/resources.php
-[Tue Aug 25 09:29:41 2026] 127.0.0.1:35982 Closing
-[Tue Aug 25 09:32:40 2026] 127.0.0.1:48542 Accepted
-[Tue Aug 25 09:32:40 2026] 127.0.0.1:48542 [401]: DELETE /api/admin/resources.php?id=1
-[Tue Aug 25 09:32:40 2026] 127.0.0.1:48542 Closing
-[Tue Aug 25 09:32:47 2026] 127.0.0.1:48554 Accepted
-[Tue Aug 25 09:32:47 2026] 127.0.0.1:48554 [401]: DELETE /api/admin/resources.php?id=1
-[Tue Aug 25 09:32:47 2026] 127.0.0.1:48554 Closing
-[Tue Aug 25 09:32:49 2026] 127.0.0.1:56404 Accepted
-[Tue Aug 25 09:32:49 2026] 127.0.0.1:56404 [200]: GET /api/resources.php
-[Tue Aug 25 09:32:49 2026] 127.0.0.1:56404 Closing
-[Tue Aug 25 09:32:50 2026] 127.0.0.1:56412 Accepted
-[Tue Aug 25 09:32:50 2026] 127.0.0.1:56412 [200]: GET /api/resources.php
-[Tue Aug 25 09:32:50 2026] 127.0.0.1:56412 Closing
-[Tue Aug 25 09:32:50 2026] 127.0.0.1:56426 Accepted
-[Tue Aug 25 09:32:50 2026] 127.0.0.1:56426 [200]: GET /api/resources.php
-[Tue Aug 25 09:32:50 2026] 127.0.0.1:56426 Closing
-[Tue Aug 25 09:32:51 2026] 127.0.0.1:56442 Accepted
-[Tue Aug 25 09:32:51 2026] 127.0.0.1:56442 [200]: GET /api/resources.php
-[Tue Aug 25 09:32:51 2026] 127.0.0.1:56442 Closing
-[Tue Aug 25 09:32:55 2026] 127.0.0.1:56446 Accepted
-[Tue Aug 25 09:32:55 2026] 127.0.0.1:56446 [401]: PUT /api/admin/resources.php?id=2
-[Tue Aug 25 09:32:55 2026] 127.0.0.1:56446 Closing
-[Tue Aug 25 09:33:33 2026] 127.0.0.1:58832 Accepted
-[Tue Aug 25 09:33:33 2026] 127.0.0.1:58832 [200]: GET /admin/index.html
-[Tue Aug 25 09:33:33 2026] 127.0.0.1:58832 Closing
-[Tue Aug 25 09:33:33 2026] 127.0.0.1:58836 Accepted
-[Tue Aug 25 09:33:33 2026] 127.0.0.1:58836 [200]: GET /admin/css/admin.css
-[Tue Aug 25 09:33:33 2026] 127.0.0.1:58836 Closing
-[Tue Aug 25 09:33:33 2026] 127.0.0.1:58852 Accepted
-[Tue Aug 25 09:33:33 2026] 127.0.0.1:58852 [200]: GET /admin/js/admin.js
-[Tue Aug 25 09:33:33 2026] 127.0.0.1:58852 Closing
-[Tue Aug 25 09:33:33 2026] 127.0.0.1:58864 Accepted
-[Tue Aug 25 09:33:33 2026] 127.0.0.1:58864 [401]: GET /api/admin/logs.php?limit=100
-[Tue Aug 25 09:33:33 2026] 127.0.0.1:58864 Closing
-[Tue Aug 25 09:33:33 2026] 127.0.0.1:58870 Accepted
-[Tue Aug 25 09:33:33 2026] 127.0.0.1:58876 Accepted
-[Tue Aug 25 09:33:33 2026] 127.0.0.1:58870 [200]: GET /api/categories.php
-[Tue Aug 25 09:33:33 2026] 127.0.0.1:58870 Closing
-[Tue Aug 25 09:33:33 2026] 127.0.0.1:58876 [200]: GET /api/resources.php
-[Tue Aug 25 09:33:33 2026] 127.0.0.1:58876 Closing
-[Tue Aug 25 09:33:33 2026] 127.0.0.1:58886 Accepted
-[Tue Aug 25 09:33:33 2026] 127.0.0.1:58886 [401]: GET /api/admin/logs.php?limit=100
-[Tue Aug 25 09:33:33 2026] 127.0.0.1:58886 Closing
-[Tue Aug 25 09:33:45 2026] 127.0.0.1:45394 Accepted
-[Tue Aug 25 09:33:45 2026] 127.0.0.1:45394 [401]: DELETE /api/admin/resources.php?id=11
-[Tue Aug 25 09:33:45 2026] 127.0.0.1:45394 Closing
-[Tue Aug 25 09:33:50 2026] 127.0.0.1:40894 Accepted
-[Tue Aug 25 09:33:50 2026] 127.0.0.1:40894 [401]: DELETE /api/admin/resources.php?id=13
-[Tue Aug 25 09:33:50 2026] 127.0.0.1:40894 Closing
+[Tue Aug 25 10:41:13 2026] PHP Warning:  PHP Startup: Unable to load dynamic library 'pdo_sqlite' (tried: /usr/lib/php/20230831/pdo_sqlite (/usr/lib/php/20230831/pdo_sqlite: cannot open shared object file: No such file or directory), /usr/lib/php/20230831/pdo_sqlite.so (/usr/lib/php/20230831/pdo_sqlite.so: undefined symbol: php_pdo_unregister_driver)) in Unknown on line 0
+[Tue Aug 25 10:41:13 2026] PHP Warning:  Module "sqlite3" is already loaded in Unknown on line 0
+[Tue Aug 25 10:41:13 2026] PHP 8.3.6 Development Server (http://127.0.0.1:8000) started
+[Tue Aug 25 10:41:14 2026] 127.0.0.1:51558 Accepted
+[Tue Aug 25 10:41:14 2026] 127.0.0.1:51558 [200]: GET /api/health.php
+[Tue Aug 25 10:41:14 2026] 127.0.0.1:51558 Closing
+[Tue Aug 25 10:41:14 2026] 127.0.0.1:51562 Accepted
+[Tue Aug 25 10:41:14 2026] 127.0.0.1:51562 [200]: GET /admin/index.html
+[Tue Aug 25 10:41:14 2026] 127.0.0.1:51562 Closing
+[Tue Aug 25 10:41:15 2026] 127.0.0.1:51566 Accepted
+[Tue Aug 25 10:41:15 2026] 127.0.0.1:51570 Accepted
+[Tue Aug 25 10:41:15 2026] 127.0.0.1:51566 [200]: GET /admin/css/admin.css
+[Tue Aug 25 10:41:15 2026] 127.0.0.1:51570 [200]: GET /admin/js/admin.js
+[Tue Aug 25 10:41:15 2026] 127.0.0.1:51566 Closing
+[Tue Aug 25 10:41:15 2026] 127.0.0.1:51570 Closing
+[Tue Aug 25 10:41:15 2026] 127.0.0.1:51572 Accepted
+[Tue Aug 25 10:41:15 2026] 127.0.0.1:51582 Accepted
+[Tue Aug 25 10:41:15 2026] 127.0.0.1:51572 [200]: GET /api/categories.php
+[Tue Aug 25 10:41:15 2026] 127.0.0.1:51572 Closing
+[Tue Aug 25 10:41:15 2026] 127.0.0.1:51582 [200]: GET /api/resources.php
+[Tue Aug 25 10:41:15 2026] 127.0.0.1:51582 Closing
+[Tue Aug 25 10:41:28 2026] 127.0.0.1:49008 Accepted
+[Tue Aug 25 10:41:28 2026] 127.0.0.1:49008 [200]: GET /admin/index.html
+[Tue Aug 25 10:41:28 2026] 127.0.0.1:49008 Closing
+[Tue Aug 25 10:41:29 2026] 127.0.0.1:49018 Accepted
+[Tue Aug 25 10:41:29 2026] 127.0.0.1:49018 [200]: GET /admin/js/admin.js
+[Tue Aug 25 10:41:29 2026] 127.0.0.1:49018 Closing
+[Tue Aug 25 10:41:29 2026] 127.0.0.1:49028 Accepted
+[Tue Aug 25 10:41:29 2026] 127.0.0.1:49028 [200]: GET /admin/css/admin.css
+[Tue Aug 25 10:41:29 2026] 127.0.0.1:49028 Closing
+[Tue Aug 25 10:41:29 2026] 127.0.0.1:49030 Accepted
+[Tue Aug 25 10:41:29 2026] 127.0.0.1:49030 [200]: GET /api/categories.php
+[Tue Aug 25 10:41:29 2026] 127.0.0.1:49030 Closing
+[Tue Aug 25 10:41:29 2026] 127.0.0.1:49046 Accepted
+[Tue Aug 25 10:41:29 2026] 127.0.0.1:49046 [200]: GET /api/resources.php
+[Tue Aug 25 10:41:29 2026] 127.0.0.1:49046 Closing
+[Tue Aug 25 10:42:32 2026] 127.0.0.1:48858 Accepted
+[Tue Aug 25 10:42:32 2026] 127.0.0.1:48858 [200]: GET /api/admin/logs.php?limit=100
+[Tue Aug 25 10:42:32 2026] 127.0.0.1:48858 Closing
+[Tue Aug 25 10:42:51 2026] 127.0.0.1:42752 Accepted
+[Tue Aug 25 10:42:51 2026] 127.0.0.1:42752 [200]: GET /api/admin/logs.php?limit=100
+[Tue Aug 25 10:42:51 2026] 127.0.0.1:42752 Closing
+[Tue Aug 25 10:42:51 2026] 127.0.0.1:42762 Accepted
+[Tue Aug 25 10:42:51 2026] 127.0.0.1:42766 Accepted
+[Tue Aug 25 10:42:51 2026] 127.0.0.1:42762 [200]: GET /api/resources.php
+[Tue Aug 25 10:42:51 2026] 127.0.0.1:42762 Closing
+[Tue Aug 25 10:42:51 2026] 127.0.0.1:42766 [200]: GET /api/categories.php
+[Tue Aug 25 10:42:51 2026] 127.0.0.1:42766 Closing
+[Tue Aug 25 10:42:52 2026] 127.0.0.1:44610 Accepted
+[Tue Aug 25 10:42:52 2026] 127.0.0.1:44610 [200]: GET /api/categories.php
+[Tue Aug 25 10:42:52 2026] 127.0.0.1:44610 Closing
+[Tue Aug 25 10:42:52 2026] 127.0.0.1:44614 Accepted
+[Tue Aug 25 10:42:52 2026] 127.0.0.1:44614 [200]: GET /api/resources.php
+[Tue Aug 25 10:42:52 2026] 127.0.0.1:44614 Closing
+[Tue Aug 25 10:42:52 2026] 127.0.0.1:44630 Accepted
+[Tue Aug 25 10:42:52 2026] 127.0.0.1:44630 [200]: GET /api/admin/logs.php?limit=100
+[Tue Aug 25 10:42:52 2026] 127.0.0.1:44630 Closing
+[Tue Aug 25 10:42:52 2026] 127.0.0.1:44640 Accepted
+[Tue Aug 25 10:42:52 2026] 127.0.0.1:44640 [200]: GET /api/categories.php
+[Tue Aug 25 10:42:52 2026] 127.0.0.1:44640 Closing
+[Tue Aug 25 10:42:52 2026] 127.0.0.1:44650 Accepted
+[Tue Aug 25 10:42:52 2026] 127.0.0.1:44650 [200]: GET /api/resources.php
+[Tue Aug 25 10:42:52 2026] 127.0.0.1:44650 Closing
+[Tue Aug 25 10:42:52 2026] 127.0.0.1:44664 Accepted
+[Tue Aug 25 10:42:52 2026] 127.0.0.1:44664 [200]: GET /api/admin/logs.php?limit=100
+[Tue Aug 25 10:42:52 2026] 127.0.0.1:44664 Closing
+[Tue Aug 25 10:43:10 2026] 127.0.0.1:48804 Accepted
+[Tue Aug 25 10:43:10 2026] Kill switch failed: SQLSTATE[HY000]: General error: 1 cannot VACUUM from within a transaction
+[Tue Aug 25 10:43:10 2026] 127.0.0.1:48804 [500]: POST /api/admin/kill_switch.php
+[Tue Aug 25 10:43:10 2026] 127.0.0.1:48804 Closing
+[Tue Aug 25 10:43:15 2026] 127.0.0.1:47396 Accepted
+[Tue Aug 25 10:43:15 2026] 127.0.0.1:47396 [200]: DELETE /api/admin/resources.php?id=1
+[Tue Aug 25 10:43:15 2026] 127.0.0.1:47396 Closing
+[Tue Aug 25 10:43:15 2026] 127.0.0.1:47404 Accepted
+[Tue Aug 25 10:43:15 2026] 127.0.0.1:47404 [200]: GET /api/resources.php
+[Tue Aug 25 10:43:15 2026] 127.0.0.1:47404 Closing
+[Tue Aug 25 10:43:15 2026] 127.0.0.1:47416 Accepted
+[Tue Aug 25 10:43:15 2026] 127.0.0.1:47416 [200]: GET /api/admin/logs.php?limit=100
+[Tue Aug 25 10:43:15 2026] 127.0.0.1:47416 Closing
+[Tue Aug 25 10:43:23 2026] 127.0.0.1:44938 Accepted
+[Tue Aug 25 10:43:23 2026] 127.0.0.1:44938 [200]: GET /api/resources.php
+[Tue Aug 25 10:43:23 2026] 127.0.0.1:44938 Closing
+[Tue Aug 25 10:43:24 2026] 127.0.0.1:44946 Accepted
+[Tue Aug 25 10:43:24 2026] 127.0.0.1:44946 [200]: GET /api/resources.php
+[Tue Aug 25 10:43:24 2026] 127.0.0.1:44946 Closing
+[Tue Aug 25 10:43:24 2026] 127.0.0.1:44950 Accepted
+[Tue Aug 25 10:43:24 2026] 127.0.0.1:44962 Accepted
+[Tue Aug 25 10:43:24 2026] 127.0.0.1:44950 [200]: GET /api/resources.php
+[Tue Aug 25 10:43:24 2026] 127.0.0.1:44950 Closing
+[Tue Aug 25 10:43:24 2026] 127.0.0.1:44962 [200]: GET /api/resources.php
+[Tue Aug 25 10:43:24 2026] 127.0.0.1:44962 Closing
+[Tue Aug 25 10:44:50 2026] 127.0.0.1:34554 Accepted
+[Tue Aug 25 10:44:50 2026] 127.0.0.1:34554 [200]: GET /admin/index.html
+[Tue Aug 25 10:44:50 2026] 127.0.0.1:34554 Closing
+[Tue Aug 25 10:44:50 2026] 127.0.0.1:34566 Accepted
+[Tue Aug 25 10:44:50 2026] 127.0.0.1:34566 [200]: GET /admin/js/admin.js
+[Tue Aug 25 10:44:50 2026] 127.0.0.1:34566 Closing
+[Tue Aug 25 10:44:50 2026] 127.0.0.1:34582 Accepted
+[Tue Aug 25 10:44:50 2026] 127.0.0.1:34582 [200]: GET /admin/css/admin.css
+[Tue Aug 25 10:44:50 2026] 127.0.0.1:34582 Closing
+[Tue Aug 25 10:44:50 2026] 127.0.0.1:34588 Accepted
+[Tue Aug 25 10:44:50 2026] 127.0.0.1:34600 Accepted
+[Tue Aug 25 10:44:50 2026] 127.0.0.1:34588 [200]: GET /api/categories.php
+[Tue Aug 25 10:44:50 2026] 127.0.0.1:34588 Closing
+[Tue Aug 25 10:44:50 2026] 127.0.0.1:34600 [200]: GET /api/resources.php
+[Tue Aug 25 10:44:50 2026] 127.0.0.1:34600 Closing
+[Tue Aug 25 10:44:50 2026] 127.0.0.1:34608 Accepted
+[Tue Aug 25 10:44:50 2026] 127.0.0.1:34608 [200]: GET /api/admin/logs.php?limit=100
+[Tue Aug 25 10:44:50 2026] 127.0.0.1:34608 Closing
+[Tue Aug 25 10:45:00 2026] 127.0.0.1:36830 Accepted
+[Tue Aug 25 10:45:00 2026] SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: resources.sub_category_id
+[Tue Aug 25 10:45:00 2026] 127.0.0.1:36830 [500]: PUT /api/admin/resources.php?id=2
+[Tue Aug 25 10:45:00 2026] 127.0.0.1:36830 Closing
+[Tue Aug 25 10:48:08 2026] 127.0.0.1:36798 Accepted
+[Tue Aug 25 10:48:08 2026] 127.0.0.1:36798 [200]: GET /api/admin/logs.php?limit=100
+[Tue Aug 25 10:48:08 2026] 127.0.0.1:36798 Closing
+[Tue Aug 25 10:53:08 2026] 127.0.0.1:56702 Accepted
+[Tue Aug 25 10:53:08 2026] 127.0.0.1:56702 [200]: GET /admin/index.html
+[Tue Aug 25 10:53:08 2026] 127.0.0.1:56702 Closing
+[Tue Aug 25 10:53:09 2026] 127.0.0.1:56714 Accepted
+[Tue Aug 25 10:53:09 2026] 127.0.0.1:56714 [200]: GET /admin/js/admin.js
+[Tue Aug 25 10:53:09 2026] 127.0.0.1:56714 Closing
+[Tue Aug 25 10:53:09 2026] 127.0.0.1:56720 Accepted
+[Tue Aug 25 10:53:09 2026] 127.0.0.1:56720 [200]: GET /admin/css/admin.css
+[Tue Aug 25 10:53:09 2026] 127.0.0.1:56720 Closing
+[Tue Aug 25 10:53:09 2026] 127.0.0.1:56724 Accepted
+[Tue Aug 25 10:53:09 2026] 127.0.0.1:56740 Accepted
+[Tue Aug 25 10:53:09 2026] 127.0.0.1:56724 [200]: GET /api/categories.php
+[Tue Aug 25 10:53:09 2026] 127.0.0.1:56724 Closing
+[Tue Aug 25 10:53:09 2026] 127.0.0.1:56740 [200]: GET /api/resources.php
+[Tue Aug 25 10:53:09 2026] 127.0.0.1:56740 Closing
+[Tue Aug 25 10:53:09 2026] 127.0.0.1:56752 Accepted
+[Tue Aug 25 10:53:09 2026] 127.0.0.1:56752 [200]: GET /api/admin/logs.php?limit=100
+[Tue Aug 25 10:53:09 2026] 127.0.0.1:56752 Closing
