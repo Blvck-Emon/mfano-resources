@@ -284,11 +284,13 @@
         <div class="workspace-grid">
           <div class="submodule submodule-danger">
             <h4>Delete all sample data</h4>
-            <p>Deletes categories, sub-categories, resources and download logs from the database and removes any locally uploaded PDF files.</p>
+            <p>Deletes categories, sub-categories, resources and download logs from the database and removes any locally uploaded files where <code>storage_type = 'local'</code>.</p>
+
             <div class="field">
-              <button id="killAllBtn" type="button" class="button button-danger">Delete everything (type confirmation)</button>
+              <button id="killAllBtn" type="button" class="button button-danger">Delete everything</button>
+              <button id="killPreviewBtn" type="button" class="button button-outline">Preview what would be deleted</button>
             </div>
-            <div class="field-note">You will be prompted to type <code>YES_I_CONFIRM_DELETE_ALL</code> to confirm.</div>
+            <div class="field-note">You will be required to confirm the action in a modal and type <code>YES_I_CONFIRM_DELETE_ALL</code>.</div>
           </div>
 
           <div class="submodule submodule-export">
@@ -373,6 +375,28 @@
         <span>Frontend module redesign · existing SQLite/API backend retained</span>
       </footer>
     </main>
+  </div>
+
+  <!-- Confirmation Modal (hidden by default) -->
+  <div id="dangerModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="dangerModalTitle" aria-modal="true">
+    <div class="modal-backdrop" id="dangerModalBackdrop"></div>
+    <div class="modal-panel" role="document">
+      <header class="modal-header">
+        <h3 id="dangerModalTitle">Confirm permanent deletion</h3>
+      </header>
+      <div class="modal-body">
+        <p>This will <strong>permanently delete</strong> all sample data and locally stored files from the database. This action cannot be undone.</p>
+        <p><strong>Type the exact phrase</strong> below to confirm:</p>
+        <label for="dangerConfirmInput" class="visually-hidden">Confirmation phrase</label>
+        <input id="dangerConfirmInput" type="text" placeholder="Type YES_I_CONFIRM_DELETE_ALL" autocomplete="off" />
+        <div class="modal-hint">Phrase is case-sensitive. Leading/trailing spaces are trimmed.</div>
+        <div id="dangerModalMsg" class="message" aria-live="polite"></div>
+      </div>
+      <footer class="modal-footer">
+        <button id="dangerCancelBtn" type="button" class="button">Cancel</button>
+        <button id="dangerConfirmBtn" type="button" class="button button-danger">Confirm delete</button>
+      </footer>
+    </div>
   </div>
 
   <script src="js/admin.js"></script>
