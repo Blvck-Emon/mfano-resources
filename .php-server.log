@@ -55,3 +55,334 @@
 [Tue Aug 25 12:11:30 2026] 127.0.0.1:41788 Accepted
 [Tue Aug 25 12:11:30 2026] 127.0.0.1:41788 [200]: GET /api/admin/logs.php?limit=100
 [Tue Aug 25 12:11:30 2026] 127.0.0.1:41788 Closing
+[Tue Aug 25 12:23:52 2026] 127.0.0.1:46922 Accepted
+[Tue Aug 25 12:23:52 2026] 127.0.0.1:46922 [200]: GET /admin/index.html
+[Tue Aug 25 12:23:52 2026] 127.0.0.1:46922 Closing
+[Tue Aug 25 12:23:52 2026] 127.0.0.1:46924 Accepted
+[Tue Aug 25 12:23:52 2026] 127.0.0.1:46924 [200]: GET /admin/css/admin.css
+[Tue Aug 25 12:23:52 2026] 127.0.0.1:46924 Closing
+[Tue Aug 25 12:23:52 2026] 127.0.0.1:46926 Accepted
+[Tue Aug 25 12:23:52 2026] 127.0.0.1:46926 [200]: GET /admin/js/admin.js
+[Tue Aug 25 12:23:52 2026] 127.0.0.1:46926 Closing
+[Tue Aug 25 12:23:53 2026] 127.0.0.1:46968 Accepted
+[Tue Aug 25 12:23:53 2026] 127.0.0.1:46968 [200]: GET /api/resources.php
+[Tue Aug 25 12:23:53 2026] 127.0.0.1:46968 Closing
+[Tue Aug 25 12:23:53 2026] 127.0.0.1:46984 Accepted
+[Tue Aug 25 12:23:53 2026] 127.0.0.1:46984 [200]: GET /api/categories.php
+[Tue Aug 25 12:23:53 2026] 127.0.0.1:46984 Closing
+[Tue Aug 25 12:23:53 2026] 127.0.0.1:46988 Accepted
+[Tue Aug 25 12:23:53 2026] 127.0.0.1:46988 [200]: GET /api/admin/logs.php?limit=100
+[Tue Aug 25 12:23:53 2026] 127.0.0.1:46988 Closing
+[Tue Aug 25 12:29:09 2026] 127.0.0.1:53778 Accepted
+[Tue Aug 25 12:29:10 2026] 127.0.0.1:53778 [200]: GET /admin/index.html
+[Tue Aug 25 12:29:10 2026] 127.0.0.1:53778 Closing
+[Tue Aug 25 12:29:10 2026] 127.0.0.1:53784 Accepted
+[Tue Aug 25 12:29:10 2026] 127.0.0.1:53786 Accepted
+[Tue Aug 25 12:29:10 2026] 127.0.0.1:53784 [200]: GET /admin/js/admin.js
+[Tue Aug 25 12:29:10 2026] 127.0.0.1:53786 [200]: GET /admin/css/admin.css
+[Tue Aug 25 12:29:10 2026] 127.0.0.1:53784 Closing
+[Tue Aug 25 12:29:10 2026] 127.0.0.1:53786 Closing
+[Tue Aug 25 12:29:10 2026] 127.0.0.1:53788 Accepted
+[Tue Aug 25 12:29:10 2026] 127.0.0.1:53798 Accepted
+[Tue Aug 25 12:29:10 2026] 127.0.0.1:53788 [200]: GET /api/categories.php
+[Tue Aug 25 12:29:10 2026] 127.0.0.1:53788 Closing
+[Tue Aug 25 12:29:10 2026] 127.0.0.1:53798 [200]: GET /api/resources.php
+[Tue Aug 25 12:29:10 2026] 127.0.0.1:53798 Closing
+[Tue Aug 25 12:29:19 2026] 127.0.0.1:48492 Accepted
+[Tue Aug 25 12:29:19 2026] 127.0.0.1:48492 [200]: GET /admin/index.html
+[Tue Aug 25 12:29:19 2026] 127.0.0.1:48492 Closing
+[Tue Aug 25 12:29:19 2026] 127.0.0.1:48498 Accepted
+[Tue Aug 25 12:29:19 2026] 127.0.0.1:48498 [200]: GET /admin/js/admin.js
+[Tue Aug 25 12:29:19 2026] 127.0.0.1:48498 Closing
+[Tue Aug 25 12:29:19 2026] 127.0.0.1:48514 Accepted
+[Tue Aug 25 12:29:19 2026] 127.0.0.1:48514 [200]: GET /admin/css/admin.css
+[Tue Aug 25 12:29:19 2026] 127.0.0.1:48514 Closing
+[Tue Aug 25 12:29:19 2026] 127.0.0.1:48516 Accepted
+[Tue Aug 25 12:29:19 2026] 127.0.0.1:48532 Accepted
+[Tue Aug 25 12:29:19 2026] 127.0.0.1:48516 [200]: GET /api/categories.php
+[Tue Aug 25 12:29:19 2026] 127.0.0.1:48516 Closing
+[Tue Aug 25 12:29:19 2026] 127.0.0.1:48532 [200]: GET /api/resources.php
+[Tue Aug 25 12:29:19 2026] 127.0.0.1:48532 Closing
+[Tue Aug 25 12:29:19 2026] 127.0.0.1:48538 Accepted
+[Tue Aug 25 12:29:19 2026] 127.0.0.1:48538 [200]: GET /api/admin/logs.php?limit=100
+[Tue Aug 25 12:29:19 2026] 127.0.0.1:48538 Closing
+[Tue Aug 25 12:41:32 2026] 127.0.0.1:43580 Accepted
+[Tue Aug 25 12:41:32 2026] 127.0.0.1:43580 [201]: POST /api/admin/categories.php
+[Tue Aug 25 12:41:32 2026] 127.0.0.1:43580 Closing
+[Tue Aug 25 12:41:32 2026] 127.0.0.1:43588 Accepted
+[Tue Aug 25 12:41:32 2026] 127.0.0.1:43588 [200]: GET /api/categories.php
+[Tue Aug 25 12:41:32 2026] 127.0.0.1:43588 Closing
+[Tue Aug 25 12:43:56 2026] 127.0.0.1:47356 Accepted
+[Tue Aug 25 12:43:56 2026] 127.0.0.1:47356 [201]: POST /api/admin/categories.php
+[Tue Aug 25 12:43:56 2026] 127.0.0.1:47356 Closing
+[Tue Aug 25 12:43:56 2026] 127.0.0.1:47366 Accepted
+[Tue Aug 25 12:43:56 2026] 127.0.0.1:47366 [200]: GET /api/categories.php
+[Tue Aug 25 12:43:56 2026] 127.0.0.1:47366 Closing
+[Tue Aug 25 12:44:24 2026] 127.0.0.1:50952 Accepted
+[Tue Aug 25 12:44:24 2026] 127.0.0.1:50952 [201]: POST /api/admin/categories.php
+[Tue Aug 25 12:44:24 2026] 127.0.0.1:50952 Closing
+[Tue Aug 25 12:44:24 2026] 127.0.0.1:50968 Accepted
+[Tue Aug 25 12:44:24 2026] 127.0.0.1:50968 [200]: GET /api/categories.php
+[Tue Aug 25 12:44:24 2026] 127.0.0.1:50968 Closing
+[Tue Aug 25 12:44:37 2026] 127.0.0.1:48800 Accepted
+[Tue Aug 25 12:44:37 2026] 127.0.0.1:48800 [201]: POST /api/admin/categories.php
+[Tue Aug 25 12:44:37 2026] 127.0.0.1:48800 Closing
+[Tue Aug 25 12:44:37 2026] 127.0.0.1:48814 Accepted
+[Tue Aug 25 12:44:37 2026] 127.0.0.1:48814 [200]: GET /api/categories.php
+[Tue Aug 25 12:44:37 2026] 127.0.0.1:48814 Closing
+[Tue Aug 25 12:44:49 2026] 127.0.0.1:45064 Accepted
+[Tue Aug 25 12:44:49 2026] 127.0.0.1:45064 [201]: POST /api/admin/categories.php
+[Tue Aug 25 12:44:49 2026] 127.0.0.1:45064 Closing
+[Tue Aug 25 12:44:49 2026] 127.0.0.1:45078 Accepted
+[Tue Aug 25 12:44:49 2026] 127.0.0.1:45078 [200]: GET /api/categories.php
+[Tue Aug 25 12:44:49 2026] 127.0.0.1:45078 Closing
+[Tue Aug 25 12:45:15 2026] 127.0.0.1:46396 Accepted
+[Tue Aug 25 12:45:15 2026] 127.0.0.1:46396 [201]: POST /api/admin/categories.php
+[Tue Aug 25 12:45:15 2026] 127.0.0.1:46396 Closing
+[Tue Aug 25 12:45:15 2026] 127.0.0.1:46410 Accepted
+[Tue Aug 25 12:45:15 2026] 127.0.0.1:46410 [200]: GET /api/categories.php
+[Tue Aug 25 12:45:15 2026] 127.0.0.1:46410 Closing
+[Tue Aug 25 12:45:29 2026] 127.0.0.1:57390 Accepted
+[Tue Aug 25 12:45:29 2026] 127.0.0.1:57390 [201]: POST /api/admin/categories.php
+[Tue Aug 25 12:45:29 2026] 127.0.0.1:57390 Closing
+[Tue Aug 25 12:45:29 2026] 127.0.0.1:57406 Accepted
+[Tue Aug 25 12:45:29 2026] 127.0.0.1:57406 [200]: GET /api/categories.php
+[Tue Aug 25 12:45:29 2026] 127.0.0.1:57406 Closing
+[Tue Aug 25 12:45:41 2026] 127.0.0.1:56718 Accepted
+[Tue Aug 25 12:45:41 2026] 127.0.0.1:56718 [201]: POST /api/admin/categories.php
+[Tue Aug 25 12:45:41 2026] 127.0.0.1:56718 Closing
+[Tue Aug 25 12:45:41 2026] 127.0.0.1:56730 Accepted
+[Tue Aug 25 12:45:41 2026] 127.0.0.1:56730 [200]: GET /api/categories.php
+[Tue Aug 25 12:45:41 2026] 127.0.0.1:56730 Closing
+[Tue Aug 25 12:45:51 2026] 127.0.0.1:35884 Accepted
+[Tue Aug 25 12:45:51 2026] 127.0.0.1:35884 [201]: POST /api/admin/categories.php
+[Tue Aug 25 12:45:51 2026] 127.0.0.1:35884 Closing
+[Tue Aug 25 12:45:51 2026] 127.0.0.1:35900 Accepted
+[Tue Aug 25 12:45:51 2026] 127.0.0.1:35900 [200]: GET /api/categories.php
+[Tue Aug 25 12:45:51 2026] 127.0.0.1:35900 Closing
+[Tue Aug 25 12:46:06 2026] 127.0.0.1:54280 Accepted
+[Tue Aug 25 12:46:06 2026] 127.0.0.1:54280 [201]: POST /api/admin/categories.php
+[Tue Aug 25 12:46:06 2026] 127.0.0.1:54280 Closing
+[Tue Aug 25 12:46:06 2026] 127.0.0.1:54286 Accepted
+[Tue Aug 25 12:46:06 2026] 127.0.0.1:54286 [200]: GET /api/categories.php
+[Tue Aug 25 12:46:06 2026] 127.0.0.1:54286 Closing
+[Tue Aug 25 12:51:23 2026] 127.0.0.1:53878 Accepted
+[Tue Aug 25 12:51:23 2026] 127.0.0.1:53878 [200]: POST /api/admin/kill_switch.php
+[Tue Aug 25 12:51:23 2026] 127.0.0.1:53878 Closing
+[Tue Aug 25 12:51:24 2026] 127.0.0.1:55044 Accepted
+[Tue Aug 25 12:51:24 2026] 127.0.0.1:55044 [200]: GET /admin/index.html
+[Tue Aug 25 12:51:24 2026] 127.0.0.1:55044 Closing
+[Tue Aug 25 12:51:24 2026] 127.0.0.1:55046 Accepted
+[Tue Aug 25 12:51:24 2026] 127.0.0.1:55046 [200]: GET /admin/js/admin.js
+[Tue Aug 25 12:51:24 2026] 127.0.0.1:55062 Accepted
+[Tue Aug 25 12:51:24 2026] 127.0.0.1:55046 Closing
+[Tue Aug 25 12:51:24 2026] 127.0.0.1:55062 [200]: GET /admin/css/admin.css
+[Tue Aug 25 12:51:24 2026] 127.0.0.1:55062 Closing
+[Tue Aug 25 12:51:25 2026] 127.0.0.1:55068 Accepted
+[Tue Aug 25 12:51:25 2026] 127.0.0.1:55068 [200]: GET /api/categories.php
+[Tue Aug 25 12:51:25 2026] 127.0.0.1:55068 Closing
+[Tue Aug 25 12:51:25 2026] 127.0.0.1:55072 Accepted
+[Tue Aug 25 12:51:25 2026] 127.0.0.1:55072 [200]: GET /api/resources.php
+[Tue Aug 25 12:51:25 2026] 127.0.0.1:55072 Closing
+[Tue Aug 25 12:51:25 2026] 127.0.0.1:55084 Accepted
+[Tue Aug 25 12:51:25 2026] 127.0.0.1:55084 [200]: GET /api/admin/logs.php?limit=100
+[Tue Aug 25 12:51:25 2026] 127.0.0.1:55084 Closing
+[Tue Aug 25 12:51:55 2026] 127.0.0.1:43116 Accepted
+[Tue Aug 25 12:51:55 2026] 127.0.0.1:43116 [201]: POST /api/admin/categories.php
+[Tue Aug 25 12:51:55 2026] 127.0.0.1:43116 Closing
+[Tue Aug 25 12:51:55 2026] 127.0.0.1:43130 Accepted
+[Tue Aug 25 12:51:55 2026] 127.0.0.1:43130 [200]: GET /api/categories.php
+[Tue Aug 25 12:51:55 2026] 127.0.0.1:43130 Closing
+[Tue Aug 25 12:52:32 2026] 127.0.0.1:40122 Accepted
+[Tue Aug 25 12:52:32 2026] 127.0.0.1:40122 [201]: POST /api/admin/subcategories.php
+[Tue Aug 25 12:52:32 2026] 127.0.0.1:40122 Closing
+[Tue Aug 25 12:52:32 2026] 127.0.0.1:40138 Accepted
+[Tue Aug 25 12:52:32 2026] 127.0.0.1:40138 [200]: GET /api/categories.php
+[Tue Aug 25 12:52:32 2026] 127.0.0.1:40138 Closing
+[Tue Aug 25 12:52:43 2026] 127.0.0.1:35592 Accepted
+[Tue Aug 25 12:52:43 2026] 127.0.0.1:35592 [201]: POST /api/admin/subcategories.php
+[Tue Aug 25 12:52:43 2026] 127.0.0.1:35592 Closing
+[Tue Aug 25 12:52:43 2026] 127.0.0.1:35596 Accepted
+[Tue Aug 25 12:52:43 2026] 127.0.0.1:35596 [200]: GET /api/categories.php
+[Tue Aug 25 12:52:43 2026] 127.0.0.1:35596 Closing
+[Tue Aug 25 12:52:55 2026] 127.0.0.1:51586 Accepted
+[Tue Aug 25 12:52:55 2026] 127.0.0.1:51586 [201]: POST /api/admin/subcategories.php
+[Tue Aug 25 12:52:55 2026] 127.0.0.1:51586 Closing
+[Tue Aug 25 12:52:55 2026] 127.0.0.1:51590 Accepted
+[Tue Aug 25 12:52:55 2026] 127.0.0.1:51590 [200]: GET /api/categories.php
+[Tue Aug 25 12:52:55 2026] 127.0.0.1:51590 Closing
+[Tue Aug 25 12:53:06 2026] 127.0.0.1:50562 Accepted
+[Tue Aug 25 12:53:06 2026] 127.0.0.1:50562 [201]: POST /api/admin/subcategories.php
+[Tue Aug 25 12:53:06 2026] 127.0.0.1:50562 Closing
+[Tue Aug 25 12:53:06 2026] 127.0.0.1:50570 Accepted
+[Tue Aug 25 12:53:06 2026] 127.0.0.1:50570 [200]: GET /api/categories.php
+[Tue Aug 25 12:53:06 2026] 127.0.0.1:50570 Closing
+[Tue Aug 25 12:53:24 2026] 127.0.0.1:60162 Accepted
+[Tue Aug 25 12:53:24 2026] 127.0.0.1:60162 [201]: POST /api/admin/categories.php
+[Tue Aug 25 12:53:24 2026] 127.0.0.1:60162 Closing
+[Tue Aug 25 12:53:24 2026] 127.0.0.1:60174 Accepted
+[Tue Aug 25 12:53:24 2026] 127.0.0.1:60174 [200]: GET /api/categories.php
+[Tue Aug 25 12:53:24 2026] 127.0.0.1:60174 Closing
+[Tue Aug 25 12:53:36 2026] 127.0.0.1:50656 Accepted
+[Tue Aug 25 12:53:36 2026] 127.0.0.1:50656 [201]: POST /api/admin/subcategories.php
+[Tue Aug 25 12:53:36 2026] 127.0.0.1:50656 Closing
+[Tue Aug 25 12:53:36 2026] 127.0.0.1:50658 Accepted
+[Tue Aug 25 12:53:36 2026] 127.0.0.1:50658 [200]: GET /api/categories.php
+[Tue Aug 25 12:53:36 2026] 127.0.0.1:50658 Closing
+[Tue Aug 25 12:53:45 2026] 127.0.0.1:48080 Accepted
+[Tue Aug 25 12:53:45 2026] 127.0.0.1:48080 [201]: POST /api/admin/subcategories.php
+[Tue Aug 25 12:53:45 2026] 127.0.0.1:48080 Closing
+[Tue Aug 25 12:53:45 2026] 127.0.0.1:48082 Accepted
+[Tue Aug 25 12:53:45 2026] 127.0.0.1:48082 [200]: GET /api/categories.php
+[Tue Aug 25 12:53:45 2026] 127.0.0.1:48082 Closing
+[Tue Aug 25 12:54:10 2026] 127.0.0.1:48122 Accepted
+[Tue Aug 25 12:54:10 2026] 127.0.0.1:48122 [201]: POST /api/admin/subcategories.php
+[Tue Aug 25 12:54:10 2026] 127.0.0.1:48122 Closing
+[Tue Aug 25 12:54:10 2026] 127.0.0.1:48132 Accepted
+[Tue Aug 25 12:54:10 2026] 127.0.0.1:48132 [200]: GET /api/categories.php
+[Tue Aug 25 12:54:10 2026] 127.0.0.1:48132 Closing
+[Tue Aug 25 12:54:16 2026] 127.0.0.1:56508 Accepted
+[Tue Aug 25 12:54:16 2026] 127.0.0.1:56508 [201]: POST /api/admin/subcategories.php
+[Tue Aug 25 12:54:16 2026] 127.0.0.1:56508 Closing
+[Tue Aug 25 12:54:16 2026] 127.0.0.1:56512 Accepted
+[Tue Aug 25 12:54:16 2026] 127.0.0.1:56512 [200]: GET /api/categories.php
+[Tue Aug 25 12:54:16 2026] 127.0.0.1:56512 Closing
+[Tue Aug 25 12:54:32 2026] 127.0.0.1:44474 Accepted
+[Tue Aug 25 12:54:32 2026] 127.0.0.1:44474 [201]: POST /api/admin/categories.php
+[Tue Aug 25 12:54:32 2026] 127.0.0.1:44474 Closing
+[Tue Aug 25 12:54:32 2026] 127.0.0.1:44488 Accepted
+[Tue Aug 25 12:54:32 2026] 127.0.0.1:44488 [200]: GET /api/categories.php
+[Tue Aug 25 12:54:32 2026] 127.0.0.1:44488 Closing
+[Tue Aug 25 12:54:55 2026] 127.0.0.1:33782 Accepted
+[Tue Aug 25 12:54:55 2026] 127.0.0.1:33782 [201]: POST /api/admin/subcategories.php
+[Tue Aug 25 12:54:55 2026] 127.0.0.1:33782 Closing
+[Tue Aug 25 12:54:55 2026] 127.0.0.1:33788 Accepted
+[Tue Aug 25 12:54:55 2026] 127.0.0.1:33788 [200]: GET /api/categories.php
+[Tue Aug 25 12:54:55 2026] 127.0.0.1:33788 Closing
+[Tue Aug 25 12:55:00 2026] 127.0.0.1:33794 Accepted
+[Tue Aug 25 12:55:00 2026] 127.0.0.1:33794 [201]: POST /api/admin/subcategories.php
+[Tue Aug 25 12:55:00 2026] 127.0.0.1:33794 Closing
+[Tue Aug 25 12:55:00 2026] 127.0.0.1:33796 Accepted
+[Tue Aug 25 12:55:00 2026] 127.0.0.1:33796 [200]: GET /api/categories.php
+[Tue Aug 25 12:55:00 2026] 127.0.0.1:33796 Closing
+[Tue Aug 25 12:55:07 2026] 127.0.0.1:58272 Accepted
+[Tue Aug 25 12:55:07 2026] 127.0.0.1:58272 [201]: POST /api/admin/subcategories.php
+[Tue Aug 25 12:55:07 2026] 127.0.0.1:58272 Closing
+[Tue Aug 25 12:55:07 2026] 127.0.0.1:58284 Accepted
+[Tue Aug 25 12:55:07 2026] 127.0.0.1:58284 [200]: GET /api/categories.php
+[Tue Aug 25 12:55:07 2026] 127.0.0.1:58284 Closing
+[Tue Aug 25 12:55:18 2026] 127.0.0.1:58308 Accepted
+[Tue Aug 25 12:55:18 2026] 127.0.0.1:58308 [201]: POST /api/admin/subcategories.php
+[Tue Aug 25 12:55:18 2026] 127.0.0.1:58308 Closing
+[Tue Aug 25 12:55:18 2026] 127.0.0.1:58314 Accepted
+[Tue Aug 25 12:55:18 2026] 127.0.0.1:58314 [200]: GET /api/categories.php
+[Tue Aug 25 12:55:18 2026] 127.0.0.1:58314 Closing
+[Tue Aug 25 12:55:26 2026] 127.0.0.1:48974 Accepted
+[Tue Aug 25 12:55:26 2026] 127.0.0.1:48974 [201]: POST /api/admin/categories.php
+[Tue Aug 25 12:55:26 2026] 127.0.0.1:48974 Closing
+[Tue Aug 25 12:55:26 2026] 127.0.0.1:48986 Accepted
+[Tue Aug 25 12:55:26 2026] 127.0.0.1:48986 [200]: GET /api/categories.php
+[Tue Aug 25 12:55:26 2026] 127.0.0.1:48986 Closing
+[Tue Aug 25 12:55:45 2026] 127.0.0.1:49682 Accepted
+[Tue Aug 25 12:55:45 2026] 127.0.0.1:49682 [201]: POST /api/admin/subcategories.php
+[Tue Aug 25 12:55:45 2026] 127.0.0.1:49682 Closing
+[Tue Aug 25 12:55:45 2026] 127.0.0.1:49694 Accepted
+[Tue Aug 25 12:55:45 2026] 127.0.0.1:49694 [200]: GET /api/categories.php
+[Tue Aug 25 12:55:45 2026] 127.0.0.1:49694 Closing
+[Tue Aug 25 12:55:55 2026] 127.0.0.1:43886 Accepted
+[Tue Aug 25 12:55:55 2026] 127.0.0.1:43886 [201]: POST /api/admin/subcategories.php
+[Tue Aug 25 12:55:55 2026] 127.0.0.1:43886 Closing
+[Tue Aug 25 12:55:55 2026] 127.0.0.1:43898 Accepted
+[Tue Aug 25 12:55:55 2026] 127.0.0.1:43898 [200]: GET /api/categories.php
+[Tue Aug 25 12:55:55 2026] 127.0.0.1:43898 Closing
+[Tue Aug 25 12:56:03 2026] 127.0.0.1:34810 Accepted
+[Tue Aug 25 12:56:03 2026] 127.0.0.1:34810 [201]: POST /api/admin/subcategories.php
+[Tue Aug 25 12:56:03 2026] 127.0.0.1:34810 Closing
+[Tue Aug 25 12:56:03 2026] 127.0.0.1:34816 Accepted
+[Tue Aug 25 12:56:03 2026] 127.0.0.1:34816 [200]: GET /api/categories.php
+[Tue Aug 25 12:56:03 2026] 127.0.0.1:34816 Closing
+[Tue Aug 25 12:56:15 2026] 127.0.0.1:42718 Accepted
+[Tue Aug 25 12:56:15 2026] 127.0.0.1:42718 [201]: POST /api/admin/categories.php
+[Tue Aug 25 12:56:15 2026] 127.0.0.1:42718 Closing
+[Tue Aug 25 12:56:15 2026] 127.0.0.1:42734 Accepted
+[Tue Aug 25 12:56:15 2026] 127.0.0.1:42734 [200]: GET /api/categories.php
+[Tue Aug 25 12:56:15 2026] 127.0.0.1:42734 Closing
+[Tue Aug 25 12:56:30 2026] 127.0.0.1:42028 Accepted
+[Tue Aug 25 12:56:30 2026] 127.0.0.1:42028 [201]: POST /api/admin/subcategories.php
+[Tue Aug 25 12:56:30 2026] 127.0.0.1:42028 Closing
+[Tue Aug 25 12:56:30 2026] 127.0.0.1:42042 Accepted
+[Tue Aug 25 12:56:30 2026] 127.0.0.1:42042 [200]: GET /api/categories.php
+[Tue Aug 25 12:56:30 2026] 127.0.0.1:42042 Closing
+[Tue Aug 25 12:56:40 2026] 127.0.0.1:48698 Accepted
+[Tue Aug 25 12:56:40 2026] 127.0.0.1:48698 [409]: POST /api/admin/subcategories.php
+[Tue Aug 25 12:56:40 2026] 127.0.0.1:48698 Closing
+[Tue Aug 25 12:57:11 2026] 127.0.0.1:48808 Accepted
+[Tue Aug 25 12:57:11 2026] 127.0.0.1:48808 [201]: POST /api/admin/subcategories.php
+[Tue Aug 25 12:57:11 2026] 127.0.0.1:48808 Closing
+[Tue Aug 25 12:57:11 2026] 127.0.0.1:48824 Accepted
+[Tue Aug 25 12:57:11 2026] 127.0.0.1:48824 [200]: GET /api/categories.php
+[Tue Aug 25 12:57:11 2026] 127.0.0.1:48824 Closing
+[Tue Aug 25 12:57:23 2026] 127.0.0.1:58996 Accepted
+[Tue Aug 25 12:57:23 2026] 127.0.0.1:58996 [201]: POST /api/admin/subcategories.php
+[Tue Aug 25 12:57:23 2026] 127.0.0.1:58996 Closing
+[Tue Aug 25 12:57:23 2026] 127.0.0.1:58998 Accepted
+[Tue Aug 25 12:57:23 2026] 127.0.0.1:58998 [200]: GET /api/categories.php
+[Tue Aug 25 12:57:23 2026] 127.0.0.1:58998 Closing
+[Tue Aug 25 12:57:33 2026] 127.0.0.1:42424 Accepted
+[Tue Aug 25 12:57:33 2026] 127.0.0.1:42424 [409]: POST /api/admin/subcategories.php
+[Tue Aug 25 12:57:33 2026] 127.0.0.1:42424 Closing
+[Tue Aug 25 12:57:53 2026] 127.0.0.1:54118 Accepted
+[Tue Aug 25 12:57:53 2026] 127.0.0.1:54118 [201]: POST /api/admin/subcategories.php
+[Tue Aug 25 12:57:53 2026] 127.0.0.1:54118 Closing
+[Tue Aug 25 12:57:53 2026] 127.0.0.1:54134 Accepted
+[Tue Aug 25 12:57:53 2026] 127.0.0.1:54134 [200]: GET /api/categories.php
+[Tue Aug 25 12:57:53 2026] 127.0.0.1:54134 Closing
+[Tue Aug 25 12:58:38 2026] 127.0.0.1:44474 Accepted
+[Tue Aug 25 12:58:38 2026] 127.0.0.1:44474 [201]: POST /api/admin/subcategories.php
+[Tue Aug 25 12:58:38 2026] 127.0.0.1:44474 Closing
+[Tue Aug 25 12:58:38 2026] 127.0.0.1:44476 Accepted
+[Tue Aug 25 12:58:38 2026] 127.0.0.1:44476 [200]: GET /api/categories.php
+[Tue Aug 25 12:58:38 2026] 127.0.0.1:44476 Closing
+[Tue Aug 25 12:59:06 2026] 127.0.0.1:53762 Accepted
+[Tue Aug 25 12:59:06 2026] 127.0.0.1:53762 [201]: POST /api/admin/resources.php
+[Tue Aug 25 12:59:06 2026] 127.0.0.1:53762 Closing
+[Tue Aug 25 12:59:06 2026] 127.0.0.1:53776 Accepted
+[Tue Aug 25 12:59:06 2026] 127.0.0.1:53786 Accepted
+[Tue Aug 25 12:59:06 2026] 127.0.0.1:53786 [200]: GET /api/admin/logs.php?limit=100
+[Tue Aug 25 12:59:06 2026] 127.0.0.1:53786 Closing
+[Tue Aug 25 12:59:06 2026] 127.0.0.1:53776 [200]: GET /api/resources.php
+[Tue Aug 25 12:59:06 2026] 127.0.0.1:53776 Closing
+[Tue Aug 25 13:00:06 2026] 127.0.0.1:55376 Accepted
+[Tue Aug 25 13:00:06 2026] 127.0.0.1:55376 [200]: GET /admin/index.html
+[Tue Aug 25 13:00:06 2026] 127.0.0.1:55376 Closing
+[Tue Aug 25 13:00:07 2026] 127.0.0.1:55392 Accepted
+[Tue Aug 25 13:00:07 2026] 127.0.0.1:55396 Accepted
+[Tue Aug 25 13:00:07 2026] 127.0.0.1:55392 [200]: GET /admin/css/admin.css
+[Tue Aug 25 13:00:07 2026] 127.0.0.1:55396 [200]: GET /admin/js/admin.js
+[Tue Aug 25 13:00:07 2026] 127.0.0.1:55392 Closing
+[Tue Aug 25 13:00:07 2026] 127.0.0.1:55396 Closing
+[Tue Aug 25 13:00:08 2026] 127.0.0.1:55408 Accepted
+[Tue Aug 25 13:00:08 2026] 127.0.0.1:55418 Accepted
+[Tue Aug 25 13:00:08 2026] 127.0.0.1:55408 [200]: GET /api/categories.php
+[Tue Aug 25 13:00:08 2026] 127.0.0.1:55408 Closing
+[Tue Aug 25 13:00:08 2026] 127.0.0.1:55418 [200]: GET /api/resources.php
+[Tue Aug 25 13:00:08 2026] 127.0.0.1:55418 Closing
+[Tue Aug 25 13:01:35 2026] 127.0.0.1:57456 Accepted
+[Tue Aug 25 13:01:35 2026] 127.0.0.1:57456 [201]: POST /api/admin/resources.php
+[Tue Aug 25 13:01:35 2026] 127.0.0.1:57456 Closing
+[Tue Aug 25 13:01:35 2026] 127.0.0.1:57460 Accepted
+[Tue Aug 25 13:01:35 2026] 127.0.0.1:57470 Accepted
+[Tue Aug 25 13:01:35 2026] 127.0.0.1:57460 [200]: GET /api/admin/logs.php?limit=100
+[Tue Aug 25 13:01:35 2026] 127.0.0.1:57460 Closing
+[Tue Aug 25 13:01:35 2026] 127.0.0.1:57470 [200]: GET /api/resources.php
+[Tue Aug 25 13:01:35 2026] 127.0.0.1:57470 Closing
+[Tue Aug 25 13:01:40 2026] 127.0.0.1:57486 Accepted
+[Tue Aug 25 13:01:40 2026] 127.0.0.1:57486 [200]: GET /uploads/resources/8f671a0902557fc505ed7f0f449b5f8c.pdf
+[Tue Aug 25 13:01:40 2026] 127.0.0.1:57486 Closing
+[Tue Aug 25 13:01:45 2026] 127.0.0.1:44812 Accepted
+[Tue Aug 25 13:01:45 2026] 127.0.0.1:44812 [200]: GET /uploads/resources/754d82fe08985dda8cf35725a6161389.pdf
+[Tue Aug 25 13:01:45 2026] 127.0.0.1:44812 Closing
+[Tue Aug 25 13:01:49 2026] 127.0.0.1:44828 Accepted
+[Tue Aug 25 13:01:49 2026] SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: resources.sub_category_id
+[Tue Aug 25 13:01:49 2026] 127.0.0.1:44828 [500]: PUT /api/admin/resources.php?id=205
+[Tue Aug 25 13:01:49 2026] 127.0.0.1:44828 Closing
