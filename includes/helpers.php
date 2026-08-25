@@ -3,6 +3,7 @@
  * includes/helpers.php
  *
  * Small shared helpers so every endpoint file stays short and consistent.
+ * Unchanged by the SQLite refactor — these are DB-agnostic.
  */
 
 function sendJson($data, int $statusCode = 200): void
@@ -56,4 +57,14 @@ function getJsonBody(): array
     }
     $decoded = json_decode($raw, true);
     return is_array($decoded) ? $decoded : [];
+}
+
+/** Best-effort real client IP, aware of a reverse proxy X-Forwarded-For header. */
+function getClientIp(): ?string
+{
+    $forwarded = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? null;
+    if ($forwarded) {
+        return trim(explode(',', $forwarded)[0]);
+    }
+    return $_SERVER['REMOTE_ADDR'] ?? null;
 }
