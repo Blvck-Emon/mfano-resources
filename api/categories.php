@@ -4,7 +4,8 @@
  *
  * GET /api/categories.php
  * Public endpoint. Returns the full category -> sub-category tree,
- * used for navigation and the sidebar filter.
+ * used for navigation and the sidebar filter. Query logic is identical
+ * to the Postgres version; only the underlying connection changed.
  */
 
 require_once __DIR__ . '/../config/db.php';
