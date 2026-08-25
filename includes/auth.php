@@ -2,9 +2,8 @@
 /**
  * includes/auth.php
  *
- * Equivalent of the Node middleware/auth.js `requireAdminKey` function.
- * Call requireAdminKey() at the very top of any script under /api/admin/
- * before touching the database.
+ * Gate for every script under /api/admin/. Unchanged by the SQLite
+ * refactor — authentication is independent of the database layer.
  */
 
 require_once __DIR__ . '/helpers.php';
@@ -19,8 +18,6 @@ function requireAdminKey(): void
         sendError('Server misconfiguration: admin key not set.', 500);
     }
 
-    // Headers arrive as HTTP_X_API_KEY under PHP's built-in server / most
-    // Apache setups; getallheaders() covers the rest.
     $providedKey = null;
     if (function_exists('getallheaders')) {
         $headers = getallheaders();
