@@ -270,14 +270,15 @@
     const title = els.title.value.trim();
     const description = els.description.value.trim();
     const subCategoryId = els.subCategory.value;
-    const isFeatured = document.getElementById('isFeatured')?.checked || false;
+    const isFeatured = document.getElementById('isFeatured')?.checked ? 1 : 0;
     const source = document.querySelector('input[name="source"]:checked')?.value || 'file';
 
     const formData = new FormData();
     formData.append('title', title);
     formData.append('description', description);
     formData.append('sub_category_id', subCategoryId);
-    formData.append('is_featured', String(isFeatured));
+    formData.append('is_featured', isFeatured);
+    formData.append('is_published', 1); // Automatically publish for frontend availability
 
     if (source === 'file') {
       const file = els.fileInput?.files[0];
@@ -286,6 +287,7 @@
         return;
       }
       formData.append('file', file);
+      formData.append('storage_type', 'local');
     } else {
       const fileUrl = els.fileUrl.value.trim();
       if (!fileUrl) {
@@ -294,6 +296,7 @@
         return;
       }
       formData.append('file_url', fileUrl);
+      formData.append('storage_type', 'external');
     }
 
     setButtonBusy(els.submitBtn, 'Saving…');
@@ -305,7 +308,7 @@
         body: formData,
       });
 
-      setMessage(els.message, 'Resource added successfully.', 'success');
+      setMessage(els.message, 'Document published successfully!', 'success');
       els.resourceForm.reset();
       resetFileUi();
       updateDescriptionCount();
@@ -825,7 +828,7 @@
 
 })();
 
-// Navigation Javascript Script Added from index.html (previously at the bottom)
+// Navigation Javascript Script
 (function() {
     'use strict';
     const toggle = document.getElementById('menuToggle');
