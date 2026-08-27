@@ -2,19 +2,99 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0b1f3a">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta name="theme-color" content="#0b1c35">
   <title>Mfano Bora Resources — Admin Panel</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
+
+  <!-- GLOBAL Mfano Bora NAVIGATION -->
+  <nav id="mainNav">
+      <div class="nav-container">
+          <a href="/" class="nav-logo">
+              <img src="logo.png" alt="Mfano Bora Logo" class="brand-mark-small">
+              <div class="site-brand">
+                  <span class="site-name">Mfano Africa ICT Hub</span>
+              </div>
+          </a>
+
+          <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
+              <span></span>
+              <span></span>
+              <span></span>
+          </button>
+
+          <ul class="nav-links" id="navLinks">
+              <li><a href="/" class="active">Home</a></li>
+              <li><a href="/hub/">The Hub</a></li>
+              
+              <li class="nav-dropdown">
+                  <button class="nav-dropdown-toggle" type="button" aria-expanded="false" aria-haspopup="true">
+                      Logistics & Transport Awards
+                  </button>
+                  <ul class="nav-dropdown-menu" id="awardsSubmenu">
+                      <li><a href="/awards/">Logistics & Transport Awards</a></li>
+                      <li><a href="/safety/">Road Safety Club</a></li>
+                      <li><a href="/gallery/">Gallery</a></li>
+                  </ul>
+              </li>
+
+              <li><a href="/consultancy/">Consultation</a></li>
+
+              <li class="nav-dropdown">
+                  <button class="nav-dropdown-toggle" type="button" aria-expanded="false" aria-haspopup="true">
+                      Attachments
+                  </button>
+                  <ul class="nav-dropdown-menu" id="careerSubmenu">
+                      <li><a href="/attachment/">Attachment</a></li>
+                      <li><a href="/internship/">Internship</a></li>
+                      <li><a href="/employment/">Employment</a></li>
+                  </ul>
+              </li>
+
+              <li><a href="/blog/">Blog</a></li>
+
+              <li class="nav-search-item">
+                  <button type="button" class="nav-search-toggle" id="searchToggle" aria-label="Open search" aria-haspopup="dialog" aria-expanded="false">
+                      <svg class="search-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                          <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+                          <line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                      <span class="search-label">Search</span>
+                  </button>
+              </li>
+
+              <li><a href="/contact-us/" class="nav-cta">Get In Touch</a></li>
+          </ul>
+      </div>
+  </nav>
+  <div class="nav-overlay" id="navOverlay"></div>
+
+  <!-- SEARCH MODAL -->
+  <div class="search-modal-overlay" id="searchModalOverlay">
+      <div class="search-modal" id="searchModal" role="dialog" aria-modal="true" aria-label="Site search">
+          <button type="button" class="search-modal-close" id="searchModalClose" aria-label="Close search">&times;</button>
+          <form class="search-modal-form" id="searchModalForm" action="/search/" method="GET" role="search">
+              <svg class="search-modal-form-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+                  <line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <input type="text" name="q" id="searchModalInput" class="search-modal-input" placeholder="Search pages, services, trainings, attachments..." autocomplete="off" aria-label="Search pages, services, trainings, attachments">
+              <button type="submit" class="search-modal-submit" aria-label="Submit search">Search</button>
+          </form>
+      </div>
+  </div>
+
   <div class="page-shell">
+    <!-- RESOURCE ADMIN PAGE TITLE HEADER -->
     <header class="topbar">
       <div class="topbar-brand">
-        <div class="brand-mark" aria-hidden="true">MB</div>
+        <img src="logo.png" alt="Mfano Bora Logo" class="brand-mark">
         <div>
           <div class="eyebrow">Mfano Bora Africa</div>
           <h1>Mfano Bora <span>Resources</span></h1>
@@ -34,7 +114,7 @@
           <h2>Manage your resource library from one workspace.</h2>
           <p class="hero-copy">Upload PDFs, maintain categories, review download activity, and keep published content organized.</p>
         </div>
-        <div class="hero-chip">White + navy interface</div>
+        <div class="hero-chip">Vibrant modern interface</div>
       </section>
 
       <!-- SECURITY MODULE -->
@@ -79,14 +159,14 @@
               <strong class="stat-value" id="statResources">—</strong>
             </div>
           </div>
-          <div class="stat-card accent">
+          <div class="stat-card">
             <span class="stat-icon">↓</span>
             <div>
               <span class="stat-label">Total Downloads</span>
               <strong class="stat-value" id="statDownloads">—</strong>
             </div>
           </div>
-          <div class="stat-card accent">
+          <div class="stat-card">
             <span class="stat-icon">24</span>
             <div>
               <span class="stat-label">Downloads · 24h</span>
@@ -369,15 +449,38 @@
           </div>
         </div>
       </section>
-
-      <footer class="page-footer">
-        <span>Mfano Bora Resources Admin</span>
-        <span>Frontend module redesign · existing SQLite/API backend retained</span>
-      </footer>
     </main>
+
+    <!-- INTEGRATED & UPGRADED FOOTER -->
+    <footer class="page-footer-expanded">
+        <div class="footer-container">
+            <div class="footer-brand-col">
+                <img src="logo.png" alt="Mfano Bora Logo" class="brand-mark-small">
+                <h4>Mfano Bora Africa</h4>
+                <p>Empowering Africa's Tech Future through world-class ICT training, industrial attachments, and digital innovation.</p>
+            </div>
+            <div class="footer-links-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="/hub/">The Hub</a></li>
+                    <li><a href="/awards/">Transport & Logistics Awards</a></li>
+                    <li><a href="/attachment/">Attachments</a></li>
+                    <li><a href="/contact-us/">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-meta-col">
+                <h4>Workspace</h4>
+                <p>Mfano Bora Resources Admin Panel</p>
+                <p class="meta-tag">Existing SQLite/API backend retained</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; 2026 Mfano Bora Africa Ltd. All Rights Reserved.</span>
+        </div>
+    </footer>
   </div>
 
-  <!-- Confirmation Modal (hidden by default) -->
+  <!-- Confirmation Modal -->
   <div id="dangerModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="dangerModalTitle" aria-modal="true">
     <div class="modal-backdrop" id="dangerModalBackdrop"></div>
     <div class="modal-panel" role="document">
