@@ -2,20 +2,15 @@
 /**
  * api/resources.php
  *
- * GET  /api/resources.php                     - list, with filters
- * GET  /api/resources.php?id=5                 - single resource
- * POST /api/resources.php?id=5&action=download  - log a download + bump counter
+ * GET  /api/resources.php                      - list, with flexible filters
+ * GET  /api/resources.php?id=5                  - single resource details
+ * POST /api/resources.php?id=5&action=download   - log a download event
  *
- * Query filters for the list view: category, subcategory, search, featured.
- *
- * Refactor notes (Postgres -> SQLite):
- *   - ILIKE -> LIKE (SQLite's LIKE is already case-insensitive for ASCII;
- *     for full Unicode-safe search use the resources_fts virtual table,
- *     see searchResources() below).
- *   - TRUE/FALSE literals -> 1
- *   - trackDownload now INSERTs into download_logs (the resources.
- *     download_count column is kept in sync automatically by the
- *     trg_download_logs_increment trigger, so we no longer UPDATE it here).
+ * Query filters for list view:
+ *   - category_id, category_slug (or category)
+ *   - sub_category_id, sub_category_slug (or subcategory)
+ *   - q (or search)
+ *   - featured (or is_featured)
  */
 
 require_once __DIR__ . '/../config/db.php';
@@ -25,7 +20,7 @@ applyCors();
 
 $pdo = getDbConnection();
 $method = $_SERVER['REQUEST_METHOD'];
-$id = isset($_GET['id']) ? (int) $_GET['id'] : null;
+$id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 $action = $_GET['action'] ?? null;
 
 if ($method === 'POST' && $id && $action === 'download') {
@@ -38,36 +33,59 @@ if ($method === 'POST' && $id && $action === 'download') {
     sendError('Method not allowed', 405);
 }
 
-/* ---------------------------- PUBLIC ---------------------------- */
+/* ---------------------------- PUBLIC API FUNCTIONS ---------------------------- */
 
 function getResources(PDO $pdo): void
 {
-    $category = $_GET['category'] ?? null;
-    $subcategory = $_GET['subcategory'] ?? null;
-    $search = $_GET['search'] ?? null;
-    $featured = $_GET['featured'] ?? null;
+    // Filter extraction with backwards and alias parameter support
+    $subCategoryId = filter_input(INPUT_GET, 'sub_category_id', FILTER_VALIDATE_INT) 
+                     ?: filter_input(INPUT_GET, 'subcategory_id', FILTER_VALIDATE_INT);
+    $subCategorySlug = $_GET['sub_category_slug'] ?? $_GET['subcategory'] ?? null;
+    
+    $categoryId = filter_input(INPUT_GET, 'category_id', FILTER_VALIDATE_INT);
+    $categorySlug = $_GET['category_slug'] ?? $_GET['category'] ?? null;
+    
+    $search = $_GET['q'] ?? $_GET['search'] ?? null;
+    $featured = $_GET['is_featured'] ?? $_GET['featured'] ?? null;
 
     $sql = "
-        SELECT r.id, r.title, r.description, r.file_url, r.storage_type, r.file_size_kb,
-               r.download_count, r.is_featured, r.publish_date,
-               sc.name AS sub_category_name, sc.slug AS sub_category_slug,
-               c.name AS category_name, c.slug AS category_slug
+        SELECT 
+            r.id, 
+            r.title, 
+            r.description, 
+            r.file_url, 
+            r.storage_type, 
+            r.file_size_kb,
+            r.download_count, 
+            r.is_featured, 
+            r.publish_date, 
+            r.created_at,
+            sc.id AS sub_category_id, 
+            sc.name AS sub_category_name, 
+            sc.slug AS sub_category_slug,
+            c.id AS category_id, 
+            c.name AS category_name, 
+            c.slug AS category_slug
         FROM resources r
-        JOIN sub_categories sc ON r.sub_category_id = sc.id
-        JOIN categories c ON sc.category_id = c.id
+        INNER JOIN sub_categories sc ON r.sub_category_id = sc.id
+        INNER JOIN categories c ON sc.category_id = c.id
         WHERE r.is_published = 1
     ";
 
     $params = [];
 
-    if ($category) {
-        $sql .= ' AND c.slug = :category';
-        $params['category'] = $category;
-    }
-
-    if ($subcategory) {
-        $sql .= ' AND sc.slug = :subcategory';
-        $params['subcategory'] = $subcategory;
+    if ($subCategoryId) {
+        $sql .= ' AND r.sub_category_id = :sub_category_id';
+        $params['sub_category_id'] = $subCategoryId;
+    } elseif ($subCategorySlug) {
+        $sql .= ' AND sc.slug = :sub_category_slug';
+        $params['sub_category_slug'] = $subCategorySlug;
+    } elseif ($categoryId) {
+        $sql .= ' AND c.id = :category_id';
+        $params['category_id'] = $categoryId;
+    } elseif ($categorySlug) {
+        $sql .= ' AND c.slug = :category_slug';
+        $params['category_slug'] = $categorySlug;
     }
 
     if ($featured) {
@@ -75,8 +93,7 @@ function getResources(PDO $pdo): void
     }
 
     if ($search) {
-        // FTS5 gives better ranking/relevance than LIKE on longer descriptions;
-        // fall back to LIKE automatically if the FTS table is unavailable.
+        // Attempt FTS5 virtual table match; fallback gracefully to LIKE if unconfigured
         try {
             $ftsIds = $pdo->prepare(
                 "SELECT rowid FROM resources_fts WHERE resources_fts MATCH :q"
@@ -89,7 +106,7 @@ function getResources(PDO $pdo): void
                 $sql .= " AND r.id IN ($placeholders)";
                 $params = array_merge(array_values($params), $ids);
             } else {
-                $sql .= ' AND 1 = 0'; // no FTS matches
+                $sql .= ' AND 1 = 0'; // Return zero results when search term has no FTS hits
             }
         } catch (PDOException $e) {
             $sql .= ' AND (r.title LIKE :search OR r.description LIKE :search2)';
@@ -98,12 +115,12 @@ function getResources(PDO $pdo): void
         }
     }
 
-    $sql .= ' ORDER BY r.publish_date DESC';
+    $sql .= ' ORDER BY r.is_featured DESC, r.created_at DESC';
 
     try {
         $stmt = $pdo->prepare($sql);
         $stmt->execute($params);
-        $rows = $stmt->fetchAll();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         sendSuccess($rows, count($rows));
     } catch (PDOException $e) {
         error_log($e->getMessage());
@@ -111,7 +128,7 @@ function getResources(PDO $pdo): void
     }
 }
 
-/** Escapes a raw search string for safe use inside an FTS5 MATCH query. */
+/** Escapes raw user search strings for safe execution inside FTS5 MATCH queries */
 function escapeFtsQuery(string $term): string
 {
     $clean = preg_replace('/[^\p{L}\p{N}\s]/u', ' ', $term);
@@ -123,14 +140,16 @@ function getResourceById(PDO $pdo, int $id): void
 {
     try {
         $stmt = $pdo->prepare(
-            'SELECT r.*, sc.name AS sub_category_name, c.name AS category_name
+            'SELECT r.*, 
+                    sc.id AS sub_category_id, sc.name AS sub_category_name, sc.slug AS sub_category_slug,
+                    c.id AS category_id, c.name AS category_name, c.slug AS category_slug
              FROM resources r
-             JOIN sub_categories sc ON r.sub_category_id = sc.id
-             JOIN categories c ON sc.category_id = c.id
+             INNER JOIN sub_categories sc ON r.sub_category_id = sc.id
+             INNER JOIN categories c ON sc.category_id = c.id
              WHERE r.id = :id AND r.is_published = 1'
         );
         $stmt->execute(['id' => $id]);
-        $row = $stmt->fetch();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$row) {
             sendError('Resource not found', 404);
@@ -143,15 +162,11 @@ function getResourceById(PDO $pdo, int $id): void
     }
 }
 
-/**
- * Records a download event. Prefer api/download.php for real links (it
- * logs AND serves/redirects the file in one request); this endpoint stays
- * for widgets that only need to fire-and-forget a tracking ping.
- */
+/** Records a download event into download_logs */
 function trackDownload(PDO $pdo, int $id): void
 {
     try {
-        $exists = $pdo->prepare('SELECT id FROM resources WHERE id = :id');
+        $exists = $pdo->prepare('SELECT id FROM resources WHERE id = :id AND is_published = 1');
         $exists->execute(['id' => $id]);
         if (!$exists->fetch()) {
             sendError('Resource not found', 404);
@@ -171,7 +186,7 @@ function trackDownload(PDO $pdo, int $id): void
         $count = $pdo->prepare('SELECT download_count FROM resources WHERE id = :id');
         $count->execute(['id' => $id]);
 
-        sendJson(['success' => true, 'download_count' => (int) $count->fetch()['download_count']]);
+        sendJson(['success' => true, 'download_count' => (int) $count->fetchColumn()]);
     } catch (PDOException $e) {
         error_log($e->getMessage());
         sendError('Failed to record download');
