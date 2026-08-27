@@ -13,7 +13,7 @@
 #   3. Creates the SQLite database when it does not exist.
 #   4. Applies schema.sql safely.
 #   5. Interactively prompts to load seed.sql (with INSERT OR IGNORE).
-#   6. Optionally creates initial and final DB CSV snapshots.
+#   6. Creates canonical DB CSV snapshots and cleans up old exports.
 #   7. Verifies the SQLite database and seeded records.
 #   8. Creates config/config.php if missing and generates an admin API key.
 #   9. Starts PHP's built-in web server.
@@ -343,40 +343,39 @@ else
 fi
 
 ###############################################################################
-# Helper: Export DB -> CSV snapshot (creates database/exports dir)
+# Helper: Export DB -> single canonical CSV files (creates database/exports dir)
 ###############################################################################
 
 export_db_to_csv() {
     local export_dir="$PROJECT_ROOT/database/exports"
     mkdir -p "$export_dir"
 
-    # timestamp used in filenames
-    local ts
-    ts="$(date -u +%Y%m%dT%H%M%SZ)"
+    # canonical output filenames (no timestamp)
+    local resources_out="$export_dir/resources_export.csv"
+    local categories_out="$export_dir/categories.csv"
+    local subcategories_out="$export_dir/sub_categories.csv"
+    local download_logs_out="$export_dir/download_logs.csv"
 
-    # resources joined with category + subcategory
-    local out="$export_dir/resources_export_${ts}.csv"
-
-    # Compose SQL for joined export (includes selected fields)
-    local sql="
-        SELECT 
-            r.id AS resource_id, 
-            c.id AS category_id, 
-            c.name AS category_name, 
-            s.id AS subcategory_id, 
-            s.name AS subcategory_name, 
-            r.title, 
-            r.description, 
-            r.file_url, 
-            r.storage_type, 
-            r.stored_path, 
-            r.checksum_sha256, 
-            r.file_size_kb, 
-            r.download_count, 
-            r.is_featured, 
-            r.is_published, 
-            r.publish_date, 
-            r.created_at, 
+    # Compose SQL for joined export (resources with category + subcategory)
+    local sql_resources="
+        SELECT
+            r.id AS resource_id,
+            c.id AS category_id,
+            c.name AS category_name,
+            s.id AS subcategory_id,
+            s.name AS subcategory_name,
+            r.title,
+            r.description,
+            r.file_url,
+            r.storage_type,
+            r.stored_path,
+            r.checksum_sha256,
+            r.file_size_kb,
+            r.download_count,
+            r.is_featured,
+            r.is_published,
+            r.publish_date,
+            r.created_at,
             r.updated_at
         FROM resources r
         LEFT JOIN sub_categories s ON r.sub_category_id = s.id
@@ -384,17 +383,28 @@ export_db_to_csv() {
         ORDER BY r.id;
     "
 
-    # run sqlite3 in CSV + header mode
-    if sqlite3 -header -csv "$DB_PATH" "$sql" > "$out"; then
-        success "Exported resources snapshot to: $out"
+    # export (use sqlite3 header+csv mode)
+    if sqlite3 -header -csv "$DB_PATH" "$sql_resources" > "$resources_out"; then
+        success "Exported resources snapshot to: $resources_out"
     else
         warn "Failed to export resources snapshot to CSV."
     fi
 
-    # Also export categories, sub_categories, download_logs for completeness
-    sqlite3 -header -csv "$DB_PATH" "SELECT * FROM categories ORDER BY id;" > "$export_dir/categories_${ts}.csv" || warn "categories CSV failed"
-    sqlite3 -header -csv "$DB_PATH" "SELECT * FROM sub_categories ORDER BY id;" > "$export_dir/sub_categories_${ts}.csv" || warn "sub_categories CSV failed"
-    sqlite3 -header -csv "$DB_PATH" "SELECT * FROM download_logs ORDER BY downloaded_at DESC LIMIT 10000;" > "$export_dir/download_logs_${ts}.csv" || warn "download_logs CSV failed"
+    sqlite3 -header -csv "$DB_PATH" "SELECT * FROM categories ORDER BY id;" > "$categories_out" || warn "categories CSV failed"
+    sqlite3 -header -csv "$DB_PATH" "SELECT * FROM sub_categories ORDER BY id;" > "$subcategories_out" || warn "sub_categories CSV failed"
+    sqlite3 -header -csv "$DB_PATH" "SELECT * FROM download_logs ORDER BY downloaded_at DESC LIMIT 10000;" > "$download_logs_out" || warn "download_logs CSV failed"
+
+    # Remove any older timestamped CSVs that match the same prefixes to avoid duplicates
+    find "$export_dir" -maxdepth 1 -type f \( -name "resources_export_*.csv" -o -name "categories_*.csv" -o -name "sub_categories_*.csv" -o -name "download_logs_*.csv" \) -print0 | while IFS= read -r -d '' oldf; do
+        # make sure we don't accidentally delete canonical files if names collide
+        case "$(basename "$oldf")" in
+            resources_export_*.csv|categories_*.csv|sub_categories_*.csv|download_logs_*.csv)
+                rm -f "$oldf" || warn "Failed to remove old export file: $oldf"
+            ;;
+        esac
+    done
+
+    success "Canonical CSV exports up-to-date in: $export_dir"
 }
 
 # If the user chose to load seed, produce a CSV snapshot
