@@ -126,3 +126,20 @@ FOR EACH ROW
 BEGIN
     UPDATE resources SET download_count = download_count + 1 WHERE id = NEW.resource_id;
 END;
+
+-- ----------------------------------------------------------------------
+-- 5. Admin auth attempts (NEW) — brute-force / rate-limiting support for
+--    every request gated by includes/auth.php::requireAdminKey(). Purely
+--    additive: CREATE TABLE IF NOT EXISTS means re-running this schema
+--    against an existing database (as the setup scripts already do on
+--    every run) safely adds this table without touching existing data.
+-- ----------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS admin_auth_attempts (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    ip_address    TEXT NOT NULL,
+    success       INTEGER NOT NULL DEFAULT 0 CHECK (success IN (0,1)),
+    attempted_at  TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%dT%H:%M:%fZ', 'now'))
+);
+
+CREATE INDEX IF NOT EXISTS idx_admin_auth_attempts_ip_time
+    ON admin_auth_attempts(ip_address, attempted_at);
