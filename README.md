@@ -1,221 +1,248 @@
-# README — Mfano Bora Resources Portal 
-## What is this
+# Mfano Bora Resources Portal
 
-A lightweight PHP backend + admin UI to manage and serve digital resources (PDFs, guides, templates) grouped in categories and sub-categories. The app exposes public REST endpoints and protected admin endpoints guarded by a shared admin API key.
+A SQLite-backed resource library: an admin panel for uploading/publishing
+PDF resources into categories & sub-categories, a public frontend where
+visitors browse and download them, and a JSON API that ties the two
+together as a single source of truth.
 
-Files and structure are in the `mfano-resources/` folder; a compact project index is included in the compiled resources. 
+```
+mfano-resources/
+├── mfano_setup_and_run_improved.sh    # Linux/macOS: setup + run everything
+├── mfano_setup_and_run_windows.ps1    # Windows: setup + run everything
+├── mfano_setup_and_run_windows.sh     # Windows (Git Bash/WSL): setup only
+├── Backend+AdminPanel/
+│   ├── database/        # schema.sql, seed.sql, mfano_bora.sqlite, exports/
+│   ├── config/          # config.php (secret, gitignored), config.example.php
+│   ├── admin/           # Admin panel (index.html, css/, js/)
+│   ├── api/             # Public + /api/admin/* JSON endpoints
+│   ├── includes/        # Shared PHP (auth, uploads, helpers)
+│   └── uploads/resources/  # Uploaded PDFs (random filenames)
+└── frontend/
+    ├── inc/bootstrap.php  # Connects the public site to the SAME database
+    ├── index.php           # Category grid (live counts from the DB)
+    ├── documents.php        # Published resources for one category
+    ├── css/, js/
+```
 
----
+## How the pieces actually connect (single source of truth)
 
-## Quick architecture summary
+```
+ Admin uploads PDF, picks Category > Sub-Category
+             │
+             ▼
+ POST /Backend+AdminPanel/api/admin/resources.php   (X-Api-Key required)
+             │  validates PDF (mime+ext), stores under uploads/resources/<random>.pdf
+             ▼
+        resources table  (is_published = 1 by default on creation)
+             │
+             │   Admin can Publish / Unpublish any time from
+             │   "04 · Library / Existing Resources" — this flips
+             │   resources.is_published via PUT /api/admin/resources.php
+             ▼
+ frontend/index.php + documents.php read the SAME SQLite database
+ directly (frontend/inc/bootstrap.php → Backend+AdminPanel/config/db.php)
+ and only ever show rows where is_published = 1, under the exact
+ category/sub-category the admin assigned.
+             │
+             ▼
+ Visitor clicks "View / Download" → GET /Backend+AdminPanel/api/download.php?id=N
+             │  streams the PDF AND inserts one row into download_logs
+             ▼
+ Admin panel "05 · Activity / Download Logs" reads download_logs
+ via GET /api/admin/logs.php — the download shows up immediately.
+```
 
-* Data: SQLite (development) — tables: `categories`, `sub_categories`, `resources`, `download_logs`, etc. (schema in `database/schema.sql`).
-* Backend: native PHP scripts exposing REST endpoints in `/api/`.
-* Admin UI: static frontend at `/admin/index.html` that calls the admin API endpoints using an `X-Api-Key` header (see `config/config.example.php`). 
-
----
+**This is the part that was fixed in this update.** Previously,
+`frontend/index.php` and `frontend/documents.php` contained a hardcoded
+PHP array of ~100 documents with no relationship to the database at all —
+publishing or unpublishing a resource in the admin panel had **no effect**
+on the public site, because the public site never queried the database.
+See `frontend/inc/bootstrap.php` for the new connection layer, and the
+comments at the top of `index.php` / `documents.php` for details.
 
 ## Prerequisites
 
-* PHP (>= 8 recommended) with PDO + SQLite (or pdo_pgsql if you deploy with PostgreSQL).
-* `sqlite3` (for development), `curl` (optional), a browser.
-* (Optional for production) Apache/Nginx and PHP-FPM.
+- PHP 8.x with `pdo_sqlite` enabled (`php -m | grep pdo_sqlite`)
+- `sqlite3` CLI
+- Bash (Linux/macOS/WSL/Git Bash) or PowerShell (Windows)
 
----
-
-## 1) Clone the repo
+## 1. Clone the repo
 
 ```bash
 git clone <your-repo-url> mfano-resources
 cd mfano-resources
 ```
 
----
+## 2. Run the backend, admin panel, and frontend together
 
-## 2) Setup — automatic (recommended for dev)
-
-There are helper scripts included:
-
-### Linux / macOS (one-step)
-
-1. Make the script executable and run it:
+**Linux / macOS:**
 
 ```bash
-chmod +x ./mfano_setup_and_run_improved.sh
+chmod +x mfano_setup_and_run_improved.sh
 ./mfano_setup_and_run_improved.sh
 ```
 
-What it does (high level): checks required tools, creates `database/mfano_bora.sqlite` if missing, applies `database/schema.sql`, offers to load `database/seed.sql`, creates `config/config.php` from the example, generates an admin API key if needed, exports CSV snapshots and starts the built-in PHP server. The script also launches the admin frontend in your browser. (See `mfano_setup_and_run_improved.sh`.) 
+**Windows (PowerShell):**
 
-### Windows (Git Bash / WSL) — convenience script
+```powershell
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\mfano_setup_and_run_windows.ps1
+```
 
-Run:
+Either script will:
+
+1. Check for PHP + `pdo_sqlite` + `sqlite3`.
+2. Create `Backend+AdminPanel/database/mfano_bora.sqlite` if it doesn't
+   exist yet, and (re-)apply `schema.sql` — this is idempotent, so
+   re-running it on an existing database only adds anything new (tables,
+   indexes) without touching existing data.
+3. Run `PRAGMA integrity_check` against the SQLite file and stop if the
+   database is corrupted.
+4. Optionally load `seed.sql` (10 categories / 102 sub-categories).
+5. Create `Backend+AdminPanel/config/config.php` from
+   `config.example.php` and generate a random `admin_api_key` if one
+   isn't already set.
+6. Start PHP's built-in server from the repo root (so both
+   `Backend+AdminPanel/` and `frontend/` are reachable in one process).
+7. Wait for `/Backend+AdminPanel/api/health.php` to report success.
+8. Open **both** the admin panel and the public frontend in your browser:
+   - Admin panel: `http://127.0.0.1:8000/Backend+AdminPanel/admin/index.html`
+   - Frontend: `http://127.0.0.1:8000/frontend/index.php`
+
+To find your admin API key after setup:
 
 ```bash
-chmod +x ./mfano_setup_and_run_windows.sh
-./mfano_setup_and_run_windows.sh
-# or, use the PowerShell script:
-./mfano_setup_and_run_windows.ps1
+php -r "echo (require 'Backend+AdminPanel/config/config.php')['admin_api_key'], PHP_EOL;"
 ```
 
-The Windows scripts create folders, apply schema, copy `config.example` to `config.php` as needed, and insert a generated admin key into the DB if missing. Example: the Windows script inserts an `admin_api_key` into the `settings` table. 
+Paste it into the "Admin API Key" field at the top of the admin panel —
+it's kept in `sessionStorage` for that browser tab only.
 
----
+## 3. Publishing a resource end-to-end
 
-## 3) Manual setup (if you prefer to do steps yourself)
+1. In the admin panel, open **"A · Add New Resource"**, pick a Category
+   & Sub-Category, upload a PDF, and submit — it's published immediately.
+2. To publish/unpublish something already in the library, use the
+   **Publish / Unpublish** button in **"04 · Library / Existing
+   Resources"**.
+3. Reload the public frontend — the resource now appears (or disappears)
+   under that exact category/sub-category, with no redeploy needed.
+4. Click "View / Download" on the frontend — the download is logged and
+   shows up in **"05 · Activity / Download Logs"** in the admin panel.
 
-### Apply the schema
+## Deploying to a live server (shared hosting / Apache)
 
-```bash
-# for sqlite (dev)
-sqlite3 database/mfano_bora.sqlite < database/schema.sql
-```
+1. Upload the whole repo (excluding `.git`) to your hosting account,
+   e.g. as a subfolder of your existing site:
+   `public_html/resources/` containing `Backend+AdminPanel/` and
+   `frontend/` as siblings, matching the local layout.
+2. Ensure PHP has `pdo_sqlite` enabled on the host (most shared hosts do
+   by default; check with your host's PHP extension panel if not).
+3. Copy `Backend+AdminPanel/config/config.example.php` to
+   `Backend+AdminPanel/config/config.php` and set:
+   - `admin_api_key` — a fresh value from
+     `php -r "echo bin2hex(random_bytes(24));"` (**never** reuse a key
+     that has ever been committed to git or shared — see Security below).
+   - `allowed_origin` — your real site origin, e.g.
+     `https://www.mfanoboraafrica.com` (not `*` in production).
+   - `security.kill_switch_enabled` — leave `false` unless this is a
+     disposable demo environment.
+4. Make sure `Backend+AdminPanel/database/`, `Backend+AdminPanel/config/`,
+   and `Backend+AdminPanel/uploads/` are writable by the PHP process
+   (typically `chmod 750` + correct ownership, not `777`).
+5. Run `sqlite3 Backend+AdminPanel/database/mfano_bora.sqlite < Backend+AdminPanel/database/schema.sql`
+   once to create the database, then load `seed.sql` if you want the
+   default taxonomy.
+6. Visit `/Backend+AdminPanel/api/health.php` on the live domain and
+   confirm `"success": true` and `"database": "sqlite"`.
+7. Visit `/frontend/index.php` and confirm the category grid loads.
 
-(If you deploy with Postgres, run `psql -U <user> -d <db> -f database/schema.sql` and adjust `config/config.php`.) 
+### Updating the existing live Mfano Bora root website folder
 
-### Seed data (optional)
+If the resources portal is deployed as a subfolder of the main
+`mfanoboraafrica.com` site (the common setup — the admin/frontend footer
+links already point back at `https://www.mfanoboraafrica.com/...`):
 
-```bash
-sqlite3 database/mfano_bora.sqlite < database/seed.sql
-```
+1. **Never overwrite these two paths on the live server** when deploying
+   an update — doing so wipes real data:
+   - `Backend+AdminPanel/database/mfano_bora.sqlite`
+   - `Backend+AdminPanel/config/config.php`
+   - `Backend+AdminPanel/uploads/resources/*` (the actual uploaded PDFs)
+2. Recommended update flow (rsync example — adapt for your host's
+   deploy method, e.g. cPanel File Manager / FTP / CI pipeline):
 
-The seed file contains the default 10 categories, sub-categories and example resources. 
+   ```bash
+   rsync -av --delete \
+     --exclude 'Backend+AdminPanel/database/mfano_bora.sqlite' \
+     --exclude 'Backend+AdminPanel/database/exports/' \
+     --exclude 'Backend+AdminPanel/config/config.php' \
+     --exclude 'Backend+AdminPanel/uploads/resources/' \
+     ./ user@yourserver:/path/to/public_html/resources/
+   ```
+3. After syncing code, re-run the idempotent schema apply on the server
+   so any new tables/columns are added without touching existing rows:
 
-### Create config
+   ```bash
+   sqlite3 Backend+AdminPanel/database/mfano_bora.sqlite < Backend+AdminPanel/database/schema.sql
+   ```
+4. Take a backup copy of `mfano_bora.sqlite` (and the `uploads/resources/`
+   folder) before every deploy — it's a single file, so this is just a
+   copy:
 
-Copy the example and update DB settings / domain / allowed origin:
+   ```bash
+   cp Backend+AdminPanel/database/mfano_bora.sqlite \
+      Backend+AdminPanel/database/backups/mfano_bora_$(date +%Y%m%d%H%M%S).sqlite
+   ```
+5. If the resources portal needs to be linked from the main site's
+   navigation/menu, add the link to wherever the main Mfano Bora Africa
+   WordPress/static site menu is managed — that's outside this repo.
 
-```bash
-cp config/config.example.php config/config.php
-# edit config/config.php: set DB path/credentials & admin_api_key & allowed_origin
-```
+## Security notes (read before deploying)
 
-The example shows the `admin_api_key` entry in the example config. 
+- **Rotate the admin API key immediately if this repo (or the compiled
+  system export used to review it) was ever shared outside your team.**
+  A real, working key was present in `Backend+AdminPanel/config/config.php`
+  in the version reviewed for this update — treat it as compromised and
+  regenerate with `php -r "echo bin2hex(random_bytes(24));"`.
+- `config/config.php` must stay out of git (confirm it's listed in
+  `.gitignore`) — only `config.example.php` (no real secret) should ever
+  be committed.
+- New in this update: failed `X-Api-Key` attempts against `/api/admin/*`
+  are now rate-limited per IP (`security.max_failed_attempts` /
+  `lockout_minutes` in `config.php`) — see `includes/auth.php`.
+- New in this update: the "Delete everything" kill switch
+  (`api/admin/kill_switch.php`) now refuses to run unless
+  `security.kill_switch_enabled = true` is explicitly set in
+  `config.php`. Keep it `false` in production.
+- New in this update: `.htaccess` files were added under
+  `Backend+AdminPanel/database/`, `config/`, `includes/`, and
+  `uploads/` to prevent the SQLite file, `config.php`, and PHP includes
+  from ever being served as raw static files if this is deployed under
+  Apache, while still allowing the actual PDFs to be opened directly.
+  (These have no effect under PHP's built-in dev server — Apache only.)
+- The admin key is stored in the browser tab's `sessionStorage`, not
+  `localStorage` — it's cleared when the tab closes, but it is still a
+  single shared secret with full CRUD + delete-everything power. For a
+  larger team, consider replacing the shared static key with per-admin
+  login (hashed passwords + short-lived session tokens) as a future
+  improvement.
+- `download_logs` stores IP address + user agent per download
+  indefinitely. If this matters for your privacy policy, add a periodic
+  job to anonymize/purge rows older than N days.
 
----
+## Troubleshooting
 
-## 4) Generate & copy the Admin API key
-
-You have two places where an admin key may live:
-
-1. **In `config/config.php`** — when the example contained a placeholder you should replace it with a generated key. The example shows where to place `admin_api_key`. 
-
-2. **In the `settings` table inside the SQLite DB** — the setup scripts may insert the key into the DB under `settings.name = 'admin_api_key'`. Example insertion logic is present in the helper scripts. 
-
-### Generate a secure key (48 hex chars)
-
-```bash
-php -r "echo bin2hex(random_bytes(24));"
-```
-
-Use the printed value as your `admin_api_key`. 
-
-### Copy from SQLite (if the setup inserted it there)
-
-```bash
-sqlite3 database/mfano_bora.sqlite "SELECT value FROM settings WHERE name='admin_api_key' LIMIT 1;"
-```
-
-This will print the key inserted by the setup scripts (if present). 
-
-### Or: place it in `config/config.php`
-
-Open `config/config.php` and set:
-
-```php
-'admin_api_key' => 'paste-your-generated-key-here',
-```
-
-Make sure `config/config.php` is protected (it’s typically gitignored).
-
----
-
-## 5) Run the application (dev)
-
-From the project root:
-
-```bash
-# Start PHP built-in server
-php -S 127.0.0.1:8000 -t .
-# Admin UI: http://127.0.0.1:8000/admin/index.html
-# Public API health: http://127.0.0.1:8000/api/health.php
-```
-
-The improved setup script will automatically start the same built-in server and wait for the health endpoint before opening the admin. 
-
----
-
-## 6) Add a document / resource
-
-There are two common ways to add resources:
-
-### A) Admin Dashboard (recommended)
-
-Open the admin UI in your browser:
-
-```
-http://127.0.0.1:8000/admin/index.html
-```
-
-Sign/authorize with the admin key (the admin UI sends the `X-Api-Key` header). Use the UI forms to create a category / sub-category or upload a resource. The UI calls the admin endpoints under `/api/admin/`. 
-
-### B) Direct API (curl) — POST a new resource
-
-The `resources` table expects fields such as `sub_category_id`, `title`, `description`, `file_url` (or use local upload). The seed SQL shows example inserts using `(sub_category_id, title, description, file_url, is_featured)` which reflects the API’s expected fields when creating a resource. Use the admin endpoint and include `X-Api-Key`. 
-
-Example (external file URL):
-
-```bash
-curl -X POST "http://127.0.0.1:8000/api/admin/resources.php" \
-  -H "X-Api-Key: your_admin_key_here" \
-  -F "sub_category_id=1" \
-  -F "title=My Document Title" \
-  -F "description=Short description" \
-  -F "file_url=https://example.com/path/to/doc.pdf" \
-  -F "is_featured=0"
-```
-
-If you want to upload a file to be stored locally, use the admin UI (it handles file multipart upload) or check `includes/upload.php` and `api/admin/resources.php` to see how the backend expects the multipart file and fields (the code supports `storage_type = 'local'` and `stored_path` for local uploads). The `resources` schema includes `storage_type`, `stored_path`, `checksum_sha256` for local uploads. 
-
----
-
-## 7) Useful queries (inspection & troubleshooting)
-
-* Show categories count (sqlite):
-
-```bash
-sqlite3 database/mfano_bora.sqlite "SELECT COUNT(*) FROM categories;"
-```
-
-* Read current `admin_api_key` from DB:
-
-```bash
-sqlite3 database/mfano_bora.sqlite "SELECT value FROM settings WHERE name='admin_api_key' LIMIT 1;"
-```
-
-(Setup scripts insert or replace this entry when creating the DB/config.) 
-
-* Health endpoint:
-
-```
-http://127.0.0.1:8000/api/health.php
-```
-
----
-
-## Tips & security
-
-* Never commit `config/config.php` with a real `admin_api_key` to source control. Use environment-specific config and keep secrets out of the repo. The example config shows the placeholder field to replace. 
-* For production, run behind Nginx/Apache and enforce HTTPS. Consider moving to PostgreSQL for larger deployments (the original design supported Postgres). 
-
----
-
-## Where in the repo to look for details
-
-* `mfano_setup_and_run_improved.sh` — end-to-end dev setup + server entrypoint. 
-* `database/schema.sql` — DB structure and triggers. 
-* `database/seed.sql` — example categories/subcategories/resources. 
-* `config/config.example.php` — example runtime settings incl. `admin_api_key`. 
-* `admin/index.html`, `admin/js/admin.js` — admin frontend and API integration. 
-
----
+- **"Required file not found" when running the setup script** — you're
+  probably running an old copy of the script from before this fix; the
+  correct paths are under `Backend+AdminPanel/`, not the project root.
+- **Health check fails** — check `.php-server.log` in the project root
+  for the PHP error, and confirm `pdo_sqlite` is enabled with
+  `php -m | grep -i sqlite`.
+- **Frontend shows "No published documents yet"** — this is expected
+  until you publish resources into that category from the admin panel;
+  it no longer means the frontend is broken.
+- **Downloads not appearing in "05 · Activity / Download Logs"** —
+  confirm the frontend's download links point at
+  `/Backend+AdminPanel/api/download.php?id=N` (see
+  `frontend/inc/bootstrap.php::mfano_download_url()`), not directly at a
+  static file path.
