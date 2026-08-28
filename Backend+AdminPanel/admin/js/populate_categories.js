@@ -85,7 +85,7 @@
   }
 
   /**
-   * Primary Taxonomy Loading Function[cite: 1]
+   * Primary Taxonomy Loading Function
    */
   async function loadTaxonomyDropdowns() {
     const parentCategorySelect = document.getElementById('parentCategory');
@@ -99,7 +99,7 @@
 
     let categoriesLoaded = false;
 
-    // Strategy A: Unified Public Endpoint with Nested Subcategories (/categories.php)[cite: 1]
+    // Strategy A: Unified Public Endpoint with Nested Subcategories (/categories.php)
     try {
       const res = await apiFetch('/categories.php');
       if (res.ok) {
@@ -114,7 +114,7 @@
           let totalSubcategoriesCount = 0;
           let hasNestedSubs = false;
 
-          // Populate subcategory select using <optgroup> for nested structures[cite: 1]
+          // Populate subcategory select using <optgroup> for nested structures
           if (subCategorySelect) {
             subCategorySelect.innerHTML = '<option value="">Select Sub-Category</option>';
 
@@ -138,7 +138,7 @@
             });
           }
 
-          // Update UI stats counter[cite: 1]
+          // Update UI stats counter
           const categoryStatElement = document.getElementById('statCategories');
           if (categoryStatElement) {
             categoryStatElement.textContent = categories.length;
@@ -149,7 +149,7 @@
           
           if (hasNestedSubs) {
             console.log(`[Taxonomy] Populated ${totalSubcategoriesCount} nested sub-categories via optgroups.`);
-            return; // Successfully finished via nested payload[cite: 1]
+            return; // Successfully finished via nested payload
           }
         }
       }
@@ -199,7 +199,7 @@
   };
   window.populateAdminCategories = loadTaxonomyDropdowns;
 
-  // Auto-initialize when DOM is ready[cite: 1]
+  // Auto-initialize when DOM is ready
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', loadTaxonomyDropdowns);
   } else {
