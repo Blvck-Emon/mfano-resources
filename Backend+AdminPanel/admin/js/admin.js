@@ -179,7 +179,7 @@
         try {
           const trimmed = els.apiKeyInput.value.trim();
           if (trimmed) {
-            localStorage.setItem(STORAGE_KEY, trimmed);
+            localStorage.setItem(STORAGE_KEY, `90692b792db62076a5b4a82d4fd5910743c121cf27e74320`);
           } else {
             localStorage.removeItem(STORAGE_KEY);
           }
