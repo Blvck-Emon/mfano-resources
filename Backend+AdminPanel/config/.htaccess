@@ -1,4 +1,14 @@
-# Block all direct HTTP access to this folder.
-# config.php holds database credentials and the admin API key —
-# it must only ever be loaded via PHP require(), never requested directly.
-Require all denied
+# Backend+AdminPanel/config/.htaccess
+#
+# config.php holds the plaintext admin_api_key. If this folder is ever
+# served by a webserver that doesn't execute .php as PHP (misconfigured
+# host, static file server, backup left in place, etc.) this prevents the
+# secret from being served as plain text.
+
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order deny,allow
+    Deny from all
+</IfModule>
