@@ -1,0 +1,54 @@
+[Fri Aug 28 12:09:05 2026] PHP Warning:  PHP Startup: Unable to load dynamic library 'pdo_sqlite' (tried: /usr/lib/php/20230831/pdo_sqlite (/usr/lib/php/20230831/pdo_sqlite: cannot open shared object file: No such file or directory), /usr/lib/php/20230831/pdo_sqlite.so (/usr/lib/php/20230831/pdo_sqlite.so: undefined symbol: php_pdo_unregister_driver)) in Unknown on line 0
+[Fri Aug 28 12:09:05 2026] PHP Warning:  Module "sqlite3" is already loaded in Unknown on line 0
+[Fri Aug 28 12:09:05 2026] PHP 8.3.6 Development Server (http://127.0.0.1:8000) started
+[Fri Aug 28 12:09:06 2026] 127.0.0.1:51982 Accepted
+[Fri Aug 28 12:09:06 2026] 127.0.0.1:51982 [200]: GET /Backend+AdminPanel/api/health.php
+[Fri Aug 28 12:09:06 2026] 127.0.0.1:51982 Closing
+[Fri Aug 28 12:09:06 2026] 127.0.0.1:51994 Accepted
+[Fri Aug 28 12:09:06 2026] 127.0.0.1:51994 [200]: GET /frontend/index.php
+[Fri Aug 28 12:09:06 2026] 127.0.0.1:51994 Closing
+[Fri Aug 28 12:09:07 2026] 127.0.0.1:52004 Accepted
+[Fri Aug 28 12:09:07 2026] 127.0.0.1:52004 [200]: GET /Backend+AdminPanel/admin/index.html
+[Fri Aug 28 12:09:07 2026] 127.0.0.1:52004 Closing
+[Fri Aug 28 12:09:07 2026] 127.0.0.1:52008 Accepted
+[Fri Aug 28 12:09:07 2026] 127.0.0.1:52010 Accepted
+[Fri Aug 28 12:09:07 2026] 127.0.0.1:52008 [200]: GET /Backend+AdminPanel/admin/js/admin.js
+[Fri Aug 28 12:09:07 2026] 127.0.0.1:52010 [200]: GET /Backend+AdminPanel/admin/css/admin.css
+[Fri Aug 28 12:09:07 2026] 127.0.0.1:52008 Closing
+[Fri Aug 28 12:09:07 2026] 127.0.0.1:52010 Closing
+[Fri Aug 28 12:09:07 2026] 127.0.0.1:52018 Accepted
+[Fri Aug 28 12:09:07 2026] 127.0.0.1:52018 [200]: GET /Backend+AdminPanel/admin/logo.png
+[Fri Aug 28 12:09:07 2026] 127.0.0.1:52018 Closing
+[Fri Aug 28 12:09:07 2026] 127.0.0.1:52020 Accepted
+[Fri Aug 28 12:09:07 2026] 127.0.0.1:52022 Accepted
+[Fri Aug 28 12:09:07 2026] 127.0.0.1:52020 [404]: GET /api/categories.php - No such file or directory
+[Fri Aug 28 12:09:07 2026] 127.0.0.1:52020 Closing
+[Fri Aug 28 12:09:07 2026] 127.0.0.1:52022 [404]: GET /api/resources.php - No such file or directory
+[Fri Aug 28 12:09:07 2026] 127.0.0.1:52022 Closing
+[Fri Aug 28 12:09:07 2026] 127.0.0.1:52026 Accepted
+[Fri Aug 28 12:09:07 2026] 127.0.0.1:52026 [404]: GET /api/admin/logs.php?limit=100 - No such file or directory
+[Fri Aug 28 12:09:07 2026] 127.0.0.1:52026 Closing
+[Fri Aug 28 12:09:08 2026] 127.0.0.1:52038 Accepted
+[Fri Aug 28 12:09:08 2026] 127.0.0.1:52038 [200]: GET /frontend/index.php
+[Fri Aug 28 12:09:08 2026] 127.0.0.1:52038 Closing
+[Fri Aug 28 12:09:08 2026] 127.0.0.1:52052 Accepted
+[Fri Aug 28 12:09:08 2026] 127.0.0.1:52052 [200]: GET /frontend/css/style.css?v=1787908148
+[Fri Aug 28 12:09:08 2026] 127.0.0.1:52052 Closing
+[Fri Aug 28 12:09:08 2026] 127.0.0.1:52054 Accepted
+[Fri Aug 28 12:09:08 2026] 127.0.0.1:52054 [200]: GET /frontend/js/resources.js
+[Fri Aug 28 12:09:08 2026] 127.0.0.1:52054 Closing
+[Fri Aug 28 12:09:08 2026] 127.0.0.1:52064 Accepted
+[Fri Aug 28 12:09:08 2026] 127.0.0.1:52064 [200]: GET /frontend/logo.png
+[Fri Aug 28 12:09:08 2026] 127.0.0.1:52064 Closing
+[Fri Aug 28 12:09:08 2026] 127.0.0.1:52080 Accepted
+[Fri Aug 28 12:09:08 2026] 127.0.0.1:52080 [200]: GET /frontend/mfano9.jpeg
+[Fri Aug 28 12:09:08 2026] 127.0.0.1:52080 Closing
+[Fri Aug 28 12:09:11 2026] 127.0.0.1:56106 Accepted
+[Fri Aug 28 12:09:11 2026] 127.0.0.1:56106 [200]: GET /frontend/documents.php?category=reports-publications
+[Fri Aug 28 12:09:11 2026] 127.0.0.1:56106 Closing
+[Fri Aug 28 12:09:11 2026] 127.0.0.1:56114 Accepted
+[Fri Aug 28 12:09:11 2026] 127.0.0.1:56114 [200]: GET /frontend/css/style.css?v=1787908151
+[Fri Aug 28 12:09:11 2026] 127.0.0.1:56114 Closing
+[Fri Aug 28 12:09:11 2026] 127.0.0.1:56122 Accepted
+[Fri Aug 28 12:09:11 2026] 127.0.0.1:56122 [200]: GET /frontend/logo.png
+[Fri Aug 28 12:09:11 2026] 127.0.0.1:56122 Closing
