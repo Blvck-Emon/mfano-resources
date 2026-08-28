@@ -99,7 +99,7 @@ try {
                 <div class="resource-controls">
                     <div class="search-box">
                         <span class="search-icon">🔍</span>
-                        <input type="text" id="resourceSearch" placeholder="Search categories..." autocomplete="off">
+                        <input type="text" id="resourceSearch" placeholder="Search categories or resources..." autocomplete="off">
                     </div>
                 </div>
 
@@ -137,10 +137,13 @@ try {
                     <?php endforeach; ?>
                 </div>
 
+                <!-- DYNAMIC RESOURCES CONTAINER -->
+                <div class="resources-list" id="resourcesList" style="margin-top: 3rem;"></div>
+
                 <!-- NO RESULTS -->
                 <div class="no-results" id="noResults">
                     <div class="no-results-icon">🔎</div>
-                    <h3>No categories found</h3>
+                    <h3>No items found</h3>
                     <p>Try using a different search term.</p>
                 </div>
 
@@ -154,9 +157,9 @@ try {
                         </div>
                     </div>
 
-                    <div class="featured-resources-grid">
+                    <div class="featured-resources-grid" id="featuredGrid">
                         <?php foreach ($featuredResources as $resource): ?>
-                            <article class="resource-card">
+                            <article class="resource-card" data-id="<?php echo (int)$resource['id']; ?>">
                                 <div class="resource-card-body">
                                     <span class="badge"><?php echo htmlspecialchars($resource['subcategory_name'] ?? 'General'); ?></span>
                                     <h3><?php echo htmlspecialchars($resource['title']); ?></h3>
@@ -164,15 +167,18 @@ try {
                                 </div>
                                 <div class="resource-card-actions">
                                     <!-- View/Inline Preview Link -->
-                                    <a href="/Backend+AdminPanel/api/download.php?id=<?php echo (int)$resource['id']; ?>&disposition=inline" 
-                                       target="_blank" 
-                                       class="button button-secondary">
+                                    <a href="/Backend+AdminPanel/api/download.php?resource_id=<?php echo (int)$resource['id']; ?>&action=view" 
+                                       data-id="<?php echo (int)$resource['id']; ?>"
+                                       data-title="<?php echo htmlspecialchars($resource['title']); ?>"
+                                       class="button button-secondary btn-view">
                                        View Resource
                                     </a>
 
                                     <!-- Direct Download Link -->
-                                    <a href="/Backend+AdminPanel/api/download.php?id=<?php echo (int)$resource['id']; ?>&disposition=attachment" 
-                                       class="button button-primary">
+                                    <a href="/Backend+AdminPanel/api/download.php?resource_id=<?php echo (int)$resource['id']; ?>&action=download" 
+                                       class="button button-primary btn-download"
+                                       target="_blank"
+                                       rel="noopener noreferrer">
                                        Download PDF
                                     </a>
                                 </div>
@@ -243,6 +249,20 @@ try {
             </div>
         </div>
     </footer>
+
+    <!-- ================= PDF VIEWER MODAL CONTAINER ================= -->
+    <div id="pdfViewerModal" class="pdf-modal" role="dialog" aria-modal="true">
+        <div class="pdf-modal-backdrop"></div>
+        <div class="pdf-modal-window">
+            <div class="pdf-modal-header">
+                <span id="pdfTitle">Document Preview</span>
+                <button id="pdfCloseBtn" class="pdf-modal-close" aria-label="Close modal">✕</button>
+            </div>
+            <div class="pdf-modal-body">
+                <iframe id="pdfViewerIframe" title="PDF Preview Window" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
 
     <script src="js/resources.js"></script>
 </body>
