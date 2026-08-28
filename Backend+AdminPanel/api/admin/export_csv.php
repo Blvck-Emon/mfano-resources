@@ -6,18 +6,15 @@
 // Usage: same as before (X-Api-Key header). Returns the resources CSV as the download attachment.
 
 require_once __DIR__ . '/../../config/db.php';
+require_once __DIR__ . '/../../includes/helpers.php';
+require_once __DIR__ . '/../../includes/auth.php';
 
-$config = require __DIR__ . '/../../config/config.php';
-$headers = getallheaders();
-$apiKey = $headers['X-Api-Key'] ?? $headers['X-API-KEY'] ?? null;
-$expected = $config['admin_api_key'] ?? null;
-
-if (!$apiKey || !$expected || !hash_equals((string)$expected, (string)$apiKey)) {
-    http_response_code(401);
-    header('Content-Type: application/json');
-    echo json_encode(['success' => false, 'error' => 'Unauthorized']);
-    exit;
-}
+// HARDENED: previously this endpoint re-implemented its own (unlimited-
+// attempts, no CORS) auth check instead of reusing includes/auth.php like
+// every other /api/admin/*.php endpoint. It now goes through the same
+// rate-limited requireAdminKey() gate as the rest of the admin API.
+applyCors();
+requireAdminKey();
 
 try {
     $pdo = getDbConnection();
