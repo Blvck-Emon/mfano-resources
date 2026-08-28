@@ -2,18 +2,31 @@
 /**
  * frontend/index.php
  *
- * REWRITTEN: this used to hold a hardcoded $categories array with fake
- * document counts, fully disconnected from the SQLite database. It now
- * pulls the live category list — with a real, live count of published
- * resources — straight from the same database the admin panel writes to.
- * See frontend/inc/bootstrap.php for the connection + query helpers.
+ * Resource Centre landing page featuring live SQLite database category counts
+ * and featured resource cards bound to the unified download handler.
  */
 
 require_once __DIR__ . '/inc/bootstrap.php';
 
 $pdo = getDbConnection();
+
+// Fetch dynamic categories with published document counts
 $categories = mfano_get_categories_with_counts($pdo);
 
+// Fetch featured published resources for the main hub view
+try {
+    $featuredStmt = $pdo->query("
+        SELECT r.id, r.title, r.description, r.download_count, sc.name AS subcategory_name
+        FROM resources r
+        LEFT JOIN sub_categories sc ON r.sub_category_id = sc.id
+        WHERE r.is_published = 1 AND r.is_featured = 1
+        ORDER BY r.id DESC
+        LIMIT 6
+    ");
+    $featuredResources = $featuredStmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    $featuredResources = [];
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -77,7 +90,7 @@ $categories = mfano_get_categories_with_counts($pdo);
                 <div class="section-heading">
                     <div>
                         <span class="section-label">KNOWLEDGE HUB</span>
-                        <h2>Browse Documents</h2>
+                        <h2>Browse Categories</h2>
                         <p>Select a category to access its available documents and resources.</p>
                     </div>
                 </div>
@@ -130,6 +143,44 @@ $categories = mfano_get_categories_with_counts($pdo);
                     <h3>No categories found</h3>
                     <p>Try using a different search term.</p>
                 </div>
+
+                <!-- FEATURED DOCUMENTS SECTION WITH UNIFIED ROUTING BUTTONS -->
+                <?php if (!empty($featuredResources)): ?>
+                    <div class="section-heading" style="margin-top: 4rem;">
+                        <div>
+                            <span class="section-label">FEATURED PUBLICATIONS</span>
+                            <h2>Popular Resources</h2>
+                            <p>Directly view or download popular learning materials.</p>
+                        </div>
+                    </div>
+
+                    <div class="featured-resources-grid">
+                        <?php foreach ($featuredResources as $resource): ?>
+                            <article class="resource-card">
+                                <div class="resource-card-body">
+                                    <span class="badge"><?php echo htmlspecialchars($resource['subcategory_name'] ?? 'General'); ?></span>
+                                    <h3><?php echo htmlspecialchars($resource['title']); ?></h3>
+                                    <p><?php echo htmlspecialchars($resource['description']); ?></p>
+                                </div>
+                                <div class="resource-card-actions">
+                                    <!-- View/Inline Preview Link -->
+                                    <a href="/Backend+AdminPanel/api/download.php?id=<?php echo (int)$resource['id']; ?>&disposition=inline" 
+                                       target="_blank" 
+                                       class="button button-secondary">
+                                       View Resource
+                                    </a>
+
+                                    <!-- Direct Download Link -->
+                                    <a href="/Backend+AdminPanel/api/download.php?id=<?php echo (int)$resource['id']; ?>&disposition=attachment" 
+                                       class="button button-primary">
+                                       Download PDF
+                                    </a>
+                                </div>
+                            </article>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+
             </div>
         </section>
     </main>
