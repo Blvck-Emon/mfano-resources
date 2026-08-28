@@ -1,16 +1,84 @@
+### Analysis & Key Fixes
+
+The input combines two distinct formatting methods:
+
+1. **Method 1 (Structured Rules)**: Path-specific ignores with explanatory comments covering PHP application secrets, SQLite databaseWAL/SHM logs, dynamic file uploads, and PHP dev server logs.
+2. **Method 2 (Raw Itemized List)**: A appended list of raw file paths, Markdown specs, Node dependencies, test HTML files, build compiler outputs, and broken citation artifacts (e.g., `.php-server.log.err[source: 11].env`).
+
+#### Applied Cleanups & Consolidation:
+
+* **Separated Merged Extensions**: Disentangled `.php-server.log.err[source: 11].env` into `.php-server.log.err` and `.env`.
+* **Deduplicated Configuration Paths**: Merged duplicate `config/config.php` lines and wildcarded configuration/secret files across subdirectories.
+* **Directory Normalization**: Added trailing slashes to directory paths (such as `node_modules/`) so Git targets full directory trees efficiently.
+* **Logical Categorization**: Grouped rules by functional domain (Secrets, Databases, Dependencies, Uploads, Compiled Artifacts, Documentation/Drafts) to improve long-term repository maintainability.
+
+---
+
+### Complete Combined `.gitignore`
+
+```gitignore
+# ==============================================================================
+# COMBINED .GITIGNORE - MFANO BORA RESOURCES PORTAL
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Environment Variables, API Keys & Secret Configurations
+# ------------------------------------------------------------------------------
+# Never commit environment settings or live API keys
 .env
+.env.*
+secret
+config/config.php
+Backend+AdminPanel/config/config.php
+**/config/config.php
+
+# ------------------------------------------------------------------------------
+# 2. Local Databases, WAL Logs, Exports & Backups
+# ------------------------------------------------------------------------------
+# Local SQLite data, transaction journals, and generated dumps
+Backend+AdminPanel/database/mfano_bora.sqlite
+Backend+AdminPanel/database/mfano_bora.sqlite-wal
+Backend+AdminPanel/database/mfano_bora.sqlite-shm
+Backend+AdminPanel/database/exports/
+Backend+AdminPanel/database/backups/
+database/resource categories and subcategories.txt
+
+# ------------------------------------------------------------------------------
+# 3. Dependencies & Package Stores
+# ------------------------------------------------------------------------------
+node_modules/
+backend-api/node_modules/
+admin-dashboard/node_modules/
+
+# ------------------------------------------------------------------------------
+# 4. User-Uploaded Content & Dynamic Media
+# ------------------------------------------------------------------------------
+# Ignore uploaded resource PDFs while retaining folder structure via .gitkeep
+Backend+AdminPanel/uploads/resources/*
+!Backend+AdminPanel/uploads/resources/.gitkeep
+
+# ------------------------------------------------------------------------------
+# 5. Application & Dev Server Logs
+# ------------------------------------------------------------------------------
+.php-server.log
+.php-server.log.err
+*.log
+
+# ------------------------------------------------------------------------------
+# 6. Compilation Scripts & Text Aggregation Artifacts
+# ------------------------------------------------------------------------------
+compile_system.py
+Mfano Bora Resources Portal _compiled_system.txt
+mfano-resources_compiled_system.txt
+rpage/rpage_compiled_system.txt
+
+# ------------------------------------------------------------------------------
+# 7. Internal Specs, Architecture Documents & Test Files
+# ------------------------------------------------------------------------------
 Lead Backend_API Architect Implementation Plan_ Mfano Bora Resources Portal.md
 .env configuration and package dependencies are required.md
-Mfano Bora Resources Portal _compiled_system.txt
-backend-api/node_modules
-admin-dashboard/node_modules
 SETUP_INSTRUCTIONS.md
-secret
 Mfano-Bora-Resources-Portal/PostgreSQL Fundamentals on Linux Mint.md
-mfano-resources_compiled_system.txt
-compile_system.py
-config/config.php
-config/config.php
 admin/mfano bora test.html
-database/resource categories and subcategories.txt
-rpage/rpage_compiled_system.txt
+
+```
