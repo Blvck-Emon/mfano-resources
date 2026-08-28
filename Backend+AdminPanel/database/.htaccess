@@ -1,4 +1,27 @@
-# Block all direct HTTP access to this folder.
-# config.php holds database credentials and the admin API key —
-# it must only ever be loaded via PHP require(), never requested directly.
-Require all denied
+# Backend+AdminPanel/database/.htaccess
+#
+# The SQLite file in this folder (mfano_bora.sqlite) is the single source
+# of truth for the whole system. It must NEVER be directly downloadable
+# over HTTP — anyone with the URL could pull every resource, download log
+# (IP addresses/user agents), and the admin API key hash if it were ever
+# stored here. This blocks all direct access; the app should only ever
+# open it via PDO through config/db.php.
+
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order deny,allow
+    Deny from all
+</IfModule>
+
+# Belt-and-braces even if the above module checks are unavailable.
+<FilesMatch "\.(sqlite|sqlite3|db|csv|sql)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order deny,allow
+        Deny from all
+    </IfModule>
+</FilesMatch>
