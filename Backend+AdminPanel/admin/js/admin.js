@@ -352,7 +352,15 @@
             if (!tbody) return;
 
             try {
-                const res = await apiFetch('/resources.php', { cache: 'no-store' });
+                // FIXED: this used to call the PUBLIC /resources.php endpoint,
+                // which only ever returns rows where is_published = 1. That
+                // meant a freshly uploaded (or manually unpublished) resource
+                // was invisible in "04 · Library / Existing Resources" even
+                // though it existed in the database — there was no way to see
+                // or manage it from the admin panel. /admin/resources.php
+                // (authenticated, X-Api-Key required) returns every resource
+                // regardless of publish state.
+                const res = await apiFetch('/admin/resources.php', { cache: 'no-store' });
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
                 const data = await res.json();
@@ -368,16 +376,24 @@
                 }
 
                 resources.forEach(item => {
+                    const isPublished = Number(item.is_published) === 1;
+                    const status = item.status || (isPublished ? 'published' : 'unpublished');
+                    const categoryLabel = item.category_name
+                        ? `${item.category_name} / ${item.subcategory_name || item.sub_category_name || ''}`
+                        : (item.subcategory_name || item.sub_category_name || item.sub_category_id);
+
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td>${item.id}</td>
-                        <td><strong>${item.title}</strong></td>
-                        <td>${item.subcategory_name || item.sub_category_name || item.sub_category_id}</td>
-                        <td><span class="badge">${item.storage_type || 'external'}</span></td>
+                        <td><strong>${escapeHtml(item.title)}</strong></td>
+                        <td>${escapeHtml(categoryLabel)}</td>
+                        <td><span class="badge">${escapeHtml(item.storage_type || 'external')}</span></td>
                         <td>${item.download_count || 0}</td>
-                        <td>${item.is_published ? 'Published' : 'Draft'}</td>
+                        <td><span class="badge ${isPublished ? 'badge-success' : 'badge-warning'}">${escapeHtml(status)}</span></td>
                         <td>${item.is_featured ? 'Yes' : 'No'}</td>
-                        <td>
+                        <td class="actions-cell">
+                            <button class="button button-outline button-small" onclick="viewResourceLog(${item.id}, '${escapeAttr(item.title)}')">View Log</button>
+                            <button class="button button-secondary button-small" onclick="togglePublish(${item.id}, ${isPublished})">${isPublished ? 'Unpublish' : 'Publish'}</button>
                             <button class="button button-danger button-small" onclick="deleteResource(${item.id})">Delete</button>
                         </td>
                     `;
@@ -387,6 +403,17 @@
                 console.error('[Admin UI] Failed to load resources:', err);
                 tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:red;">Error loading resources.</td></tr>';
             }
+        }
+
+        function escapeHtml(s) {
+            return String(s ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+
+        function escapeAttr(s) {
+            return String(s ?? '').replace(/'/g, '&#39;').replace(/"/g, '&quot;');
         }
 
         async function loadLogs() {
@@ -412,12 +439,15 @@
 
                 logs.forEach(log => {
                     const tr = document.createElement('tr');
+                    // Escaped: ip_address/referrer/user_agent are attacker-
+                    // controlled request headers, so they must not be
+                    // interpolated into innerHTML unescaped.
                     tr.innerHTML = `
-                        <td>${log.downloaded_at || log.created_at || '—'}</td>
-                        <td>${log.resource_title || log.resource_id}</td>
-                        <td><code>${log.ip_address || '—'}</code></td>
-                        <td>${log.referrer || 'Direct'}</td>
-                        <td><small>${(log.user_agent || '—').slice(0, 45)}...</small></td>
+                        <td>${escapeHtml(log.downloaded_at || log.created_at || '—')} <span class="badge">${escapeHtml(log.action || 'download')}</span></td>
+                        <td>${escapeHtml(log.resource_title || log.resource_id)}</td>
+                        <td><code>${escapeHtml(log.ip_address || '—')}</code></td>
+                        <td>${escapeHtml(log.referrer || 'Direct')}</td>
+                        <td><small>${escapeHtml((log.user_agent || '—').slice(0, 45))}...</small></td>
                     `;
                     tbody.appendChild(tr);
                 });
@@ -428,18 +458,24 @@
 
         async function loadOverviewStats() {
             try {
-                // Fetch stats endpoint[cite: 11]
-                const res = await apiFetch('/admin/stats.php', { cache: 'no-store' });
+                // FIXED: this used to call a nonexistent /admin/stats.php
+                // endpoint (404 on every load, so the download counters and
+                // "Most Downloaded" list under "02 · Overview" never
+                // populated). /admin/logs.php already computes exactly this
+                // data (total, last_24h, top_resources) for the "05 ·
+                // Activity" panel, so reuse it here instead of adding a
+                // second endpoint that would just duplicate the same query.
+                const res = await apiFetch('/admin/logs.php?limit=1', { cache: 'no-store' });
                 if (res.ok) {
                     const stats = await res.json();
                     const statDownloads = document.getElementById('statDownloads');
                     const statDownloads24h = document.getElementById('statDownloads24h');
 
-                    if (statDownloads && stats.total_downloads !== undefined) {
-                        statDownloads.textContent = stats.total_downloads;
+                    if (statDownloads && stats.total !== undefined) {
+                        statDownloads.textContent = stats.total;
                     }
-                    if (statDownloads24h && stats.downloads_24h !== undefined) {
-                        statDownloads24h.textContent = stats.downloads_24h;
+                    if (statDownloads24h && stats.last_24h !== undefined) {
+                        statDownloads24h.textContent = stats.last_24h;
                     }
 
                     const topResourcesList = document.getElementById('topResourcesList');
@@ -492,6 +528,91 @@
             }
         };
 
+        // Global Publish / Unpublish Toggle Handler
+        // NEW: previously there was no way to publish or unpublish a
+        // resource from the admin panel at all — a resource uploaded with
+        // is_published = 0 (as includes/upload.php used to set it) would
+        // stay invisible on the public frontend forever, with no button
+        // anywhere to change that.
+        window.togglePublish = async function (id, currentlyPublished) {
+            const nextState = currentlyPublished ? 0 : 1;
+            try {
+                const res = await apiFetch(`/admin/resources.php?id=${id}`, {
+                    method: 'PUT',
+                    headers: getHeaders(true),
+                    body: JSON.stringify({ is_published: nextState })
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    loadResources();
+                    loadOverviewStats();
+                } else {
+                    alert(data.error || 'Failed to update publish state');
+                }
+            } catch (err) {
+                alert('Error updating publish state');
+            }
+        };
+
+        // Global "View Log" Handler — shows resource_status_logs for one
+        // resource, i.e. the upload / publish / unpublish / edit / delete
+        // audit trail that "04 · Library / Existing Resources" is meant to
+        // surface.
+        const statusLogModal = document.getElementById('statusLogModal');
+        const statusLogModalBackdrop = document.getElementById('statusLogModalBackdrop');
+        const statusLogCloseBtn = document.getElementById('statusLogCloseBtn');
+        const statusLogTableBody = document.getElementById('statusLogTableBody');
+        const statusLogResourceLabel = document.getElementById('statusLogResourceLabel');
+
+        function toggleStatusLogModal(show) {
+            if (!statusLogModal) return;
+            statusLogModal.style.display = show ? 'block' : 'none';
+            statusLogModal.setAttribute('aria-hidden', show ? 'false' : 'true');
+        }
+
+        window.viewResourceLog = async function (id, title) {
+            if (statusLogResourceLabel) {
+                statusLogResourceLabel.textContent = title ? `Resource #${id} — ${title}` : `Resource #${id}`;
+            }
+            if (statusLogTableBody) {
+                statusLogTableBody.innerHTML = '<tr><td colspan="4">Loading…</td></tr>';
+            }
+            toggleStatusLogModal(true);
+
+            try {
+                const res = await apiFetch(`/admin/resource_status_logs.php?resource_id=${id}`, { cache: 'no-store' });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                const rows = data.data || [];
+
+                if (!statusLogTableBody) return;
+                if (rows.length === 0) {
+                    statusLogTableBody.innerHTML = '<tr><td colspan="4">No status history recorded yet.</td></tr>';
+                    return;
+                }
+
+                statusLogTableBody.innerHTML = '';
+                rows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${escapeHtml(row.created_at)}</td>
+                        <td><span class="badge">${escapeHtml(row.status)}</span></td>
+                        <td>${escapeHtml(row.note || '—')}</td>
+                        <td>${escapeHtml(row.actor || '—')}</td>
+                    `;
+                    statusLogTableBody.appendChild(tr);
+                });
+            } catch (err) {
+                console.error('[Admin UI] Failed to load status log:', err);
+                if (statusLogTableBody) {
+                    statusLogTableBody.innerHTML = '<tr><td colspan="4" style="color:red;">Failed to load status log.</td></tr>';
+                }
+            }
+        };
+
+        if (statusLogCloseBtn) statusLogCloseBtn.addEventListener('click', () => toggleStatusLogModal(false));
+        if (statusLogModalBackdrop) statusLogModalBackdrop.addEventListener('click', () => toggleStatusLogModal(false));
+
         // ---------------------------------------------------------------------
         // 5. Danger Zone & Export Controls
         // ---------------------------------------------------------------------
@@ -510,14 +631,24 @@
         if (dangerModalBackdrop) dangerModalBackdrop.addEventListener('click', () => toggleModal(false));
 
         if (killPreviewBtn) {
-            killPreviewBtn.addEventListener('click', async () => {
-                try {
-                    const res = await apiFetch('/admin/danger_delete.php?preview=true');
-                    const data = await res.json();
-                    alert(`Preview Deletion Target:\n- Categories: ${data.categories || 0}\n- Sub-categories: ${data.subcategories || 0}\n- Resources: ${data.resources || 0}\n- Storage Files: ${data.files || 0}`);
-                } catch (err) {
-                    alert('Failed to preview deletion targets.');
-                }
+            // FIXED: this used to call /admin/danger_delete.php?preview=true,
+            // which does not exist anywhere in the backend (api/admin/ only
+            // has kill_switch.php, with no preview mode) — the button always
+            // failed silently into the catch block. Rather than add a new
+            // endpoint that duplicates counts the admin panel already has
+            // on screen, build the preview from data already loaded into
+            // the DOM by loadResources()/syncTaxonomyDropdowns().
+            killPreviewBtn.addEventListener('click', () => {
+                const resources = document.getElementById('statResources')?.textContent || '0';
+                const categories = document.getElementById('statCategories')?.textContent || '0';
+                alert(
+                    'Preview of what "Delete everything" would remove:\n' +
+                    `- Categories: ${categories}\n` +
+                    `- Resources: ${resources}\n` +
+                    '- All sub-categories and download logs\n' +
+                    '- Any locally uploaded PDF files (storage_type = "local")\n\n' +
+                    'This uses the current admin panel counts. Refresh the overview first if you\'ve made recent changes.'
+                );
             });
         }
 
@@ -530,9 +661,18 @@
                 }
 
                 try {
-                    const res = await apiFetch('/admin/danger_delete.php', {
-                        method: 'DELETE',
-                        headers: getHeaders(true)
+                    // FIXED: this used to call a nonexistent
+                    // /admin/danger_delete.php with method DELETE and no
+                    // request body. The real, implemented endpoint is
+                    // api/admin/kill_switch.php, which is POST-only and
+                    // requires the confirmation phrase in the JSON body
+                    // (and requires security.kill_switch_enabled = true in
+                    // config/config.php — it is intentionally disabled by
+                    // default).
+                    const res = await apiFetch('/admin/kill_switch.php', {
+                        method: 'POST',
+                        headers: getHeaders(true),
+                        body: JSON.stringify({ confirm: confirmVal })
                     });
                     const data = await res.json();
 
