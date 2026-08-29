@@ -1,34 +1,36 @@
-# mfano_setup_and_run_windows.ps1
-#
-# Mfano Bora Resources Portal - Windows setup + run script (PowerShell)
-# Works with native sqlite3 and php on PATH.
-#
-# FIXED vs the previous version of this script:
-#   1. Path bug: the backend/admin/API/database files live under
-#      "Backend+AdminPanel\", not directly under the project root. The
-#      previous script pointed at "$here\database", "$here\config", etc.,
-#      which don't exist, so schema application and config setup silently
-#      failed against the wrong location.
-#   2. Broken key storage: the previous script generated an admin API key
-#      and stored it in a SQLite `settings` table that does not exist
-#      anywhere in schema.sql, AND that the application never reads. The
-#      real admin_api_key the app checks (includes/auth.php) lives in
-#      Backend+AdminPanel\config\config.php. This script now writes the
-#      key there, the same way the Linux setup script does.
-#   3. It previously only ran `sqlite3 $db < $schema` and stopped — it
-#      never started the PHP server, never health-checked the database,
-#      and never opened a browser. This version does all three, and opens
-#      BOTH the admin panel and the public frontend.
+<#
+.SYNOPSIS
+  Mfano Bora Resources Portal - Windows setup + run script (PowerShell)
+  Enhanced to support automated "on-click" running via generated run_mfano.bat
+  and an optional interactive mode.
+
+USAGE
+  Double-click run_mfano.bat (auto) OR:
+    powershell -NoProfile -ExecutionPolicy Bypass -File .\mfano_setup_and_run_windows.ps1
+  To run interactively (prompt for seed):
+    .\mfano_setup_and_run_windows.ps1 -Interactive
+
+NOTES
+  This script requires 'php' and 'sqlite3' on PATH.
+#>
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-$here = Split-Path -Parent $MyInvocation.MyCommand.Definition
-Push-Location $here
+Param(
+    [switch]$Interactive  # Use -Interactive to enable prompts; default behaviour is non-interactive (auto-run)
+)
 
-function Info    ($m) { Write-Host "[INFO] $m" -ForegroundColor Cyan }
-function Ok      ($m) { Write-Host "[OK] $m" -ForegroundColor Green }
-function Warn    ($m) { Write-Host "[WARN] $m" -ForegroundColor Yellow }
+# Ensure process-level bypass so a double-click via the generated .bat doesn't get blocked.
+try {
+    Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -ErrorAction SilentlyContinue
+} catch {
+    # Non-fatal; proceed anyway
+}
+
+function Info    ($m) { Write-Host "[INFO]  $m" -ForegroundColor Cyan }
+function Ok      ($m) { Write-Host "[OK]    $m" -ForegroundColor Green }
+function Warn    ($m) { Write-Host "[WARN]  $m" -ForegroundColor Yellow }
 function Fail    ($m) { Write-Host "[ERROR] $m" -ForegroundColor Red; Pop-Location; exit 1 }
 function Section ($m) { Write-Host ""; Write-Host "== $m ==" -ForegroundColor Blue }
 
@@ -36,6 +38,10 @@ function Check-Command($n) {
     $c = Get-Command $n -ErrorAction SilentlyContinue
     if (-not $c) { Warn "Missing: $n"; return $false } else { Ok "$n found: $($c.Source)"; return $true }
 }
+
+# Resolve script directory
+$here = Split-Path -Parent $MyInvocation.MyCommand.Definition
+Push-Location $here
 
 Section "Mfano Bora Resources Portal (Windows)"
 
@@ -77,7 +83,10 @@ if (-not (Test-Path $seed))   { Fail "Seed file not found: $seed" }
 
 Section "Creating / verifying SQLite database"
 
-if (-not (Test-Path $db)) {
+# Detect if DB exists already (so we can auto-load seed on first run when non-interactive)
+$dbNew = -not (Test-Path $db)
+
+if ($dbNew) {
     New-Item -ItemType File -Path $db | Out-Null
     Ok "SQLite database file created: $db"
 } else {
@@ -86,6 +95,7 @@ if (-not (Test-Path $db)) {
 
 Section "Applying SQLite schema (idempotent, safe to re-run)"
 
+# Use sqlite3 to apply schema; use -Raw to avoid line-break issues
 Get-Content $schema -Raw | & sqlite3 $db
 if ($LASTEXITCODE -ne 0) { Fail "Failed to apply SQLite schema." }
 Ok "Schema applied successfully (existing data preserved)."
@@ -102,15 +112,30 @@ if ($integrity.Trim() -eq 'ok') {
 
 Section "Loading seed data"
 
-$loadSeed = Read-Host "Load seed data into the database? [Y/n]"
+# Decide whether to auto-load seed:
+# - If running non-interactively and the DB was newly created, load seed automatically.
+# - If interactive, ask the user (default: yes).
 $seedLoaded = $false
-if ([string]::IsNullOrWhiteSpace($loadSeed) -or $loadSeed -match '^[Yy]') {
-    Get-Content $seed -Raw | & sqlite3 $db
-    if ($LASTEXITCODE -ne 0) { Fail "Failed to apply seed data." }
-    Ok "Seed data applied successfully."
-    $seedLoaded = $true
+if (-not $Interactive) {
+    if ($dbNew) {
+        Info "Non-interactive mode and a new DB was created — loading seed.sql automatically."
+        Get-Content $seed -Raw | & sqlite3 $db
+        if ($LASTEXITCODE -ne 0) { Fail "Failed to apply seed data." }
+        Ok "Seed data applied successfully."
+        $seedLoaded = $true
+    } else {
+        Warn "Non-interactive mode and existing DB - skipping seed.sql (to avoid overwriting data)."
+    }
 } else {
-    Warn "Skipping seed.sql as requested."
+    $loadSeed = Read-Host "Load seed data into the database? [Y/n]"
+    if ([string]::IsNullOrWhiteSpace($loadSeed) -or $loadSeed -match '^[Yy]') {
+        Get-Content $seed -Raw | & sqlite3 $db
+        if ($LASTEXITCODE -ne 0) { Fail "Failed to apply seed data." }
+        Ok "Seed data applied successfully."
+        $seedLoaded = $true
+    } else {
+        Warn "Skipping seed.sql as requested."
+    }
 }
 
 Section "Verifying database contents"
@@ -159,11 +184,19 @@ if (-not (Test-Path $config)) {
     }
 }
 
-# NOTE: the previous version of this script also wrote the generated key
-# into a SQLite `settings` table. That table does not exist in schema.sql
-# and includes/auth.php never reads from it — only config/config.php is
-# authoritative. That dead code path has been removed; config.php above is
-# now the single place the admin key is generated and read from.
+# Create a helper .bat file for easy "double-click to run" behaviour
+try {
+    $batPath = Join-Path $here 'run_mfano.bat'
+    $psScriptName = Split-Path -Leaf $MyInvocation.MyCommand.Definition
+    $batContent = "@echo off
+REM Helper created by mfano_setup_and_run_windows.ps1
+REM Double-click this file to launch the Mfano dev server.
+powershell -NoProfile -ExecutionPolicy Bypass -File `"%~dp0$psScriptName`""
+    Set-Content -Path $batPath -Value $batContent -Force -Encoding ASCII
+    Ok "Created helper launcher: $batPath (double-click to run the system)"
+} catch {
+    Warn "Failed to create helper run_mfano.bat: $($_.Exception.Message)"
+}
 
 Section "Starting PHP backend + admin panel + frontend"
 
@@ -178,11 +211,14 @@ Write-Host "Document root: $here"
 Write-Host "Listening on:  http://${phpHost}:${phpPort}"
 
 $serverLog = Join-Path $here '.php-server.log'
+$serverErr = Join-Path $here '.php-server.log.err'
+
+# Start PHP built-in server (hidden window). Use -PassThru so we can monitor process.
 $phpProcess = Start-Process -FilePath "php" `
     -ArgumentList @("-S", "${phpHost}:${phpPort}", "-t", $here) `
     -WorkingDirectory $here `
     -RedirectStandardOutput $serverLog `
-    -RedirectStandardError "$serverLog.err" `
+    -RedirectStandardError $serverErr `
     -PassThru -WindowStyle Hidden
 
 Ok "PHP server started (PID $($phpProcess.Id))"
@@ -211,7 +247,7 @@ if (-not $ready) {
 
 Ok "PHP backend is responding."
 
-$healthBody = (Invoke-WebRequest -Uri $healthUrl -UseBasicParsing).Content
+$healthBody = (Invoke-WebRequest -Uri $healthUrl -UseBasicParsing -TimeoutSec 5).Content
 Write-Host $healthBody
 
 if ($healthBody -match '"success"\s*:\s*true') {
@@ -240,9 +276,18 @@ try {
 
 Section "Opening admin panel and public frontend"
 
-Start-Process $adminUrl
-Start-Sleep -Seconds 1
-Start-Process $frontendUrl
+# Use Start-Process which opens the default browser for these URLs
+try {
+    Start-Process $adminUrl
+    Start-Sleep -Seconds 1
+    Start-Process $frontendUrl
+    Ok "Opened admin panel ($adminUrl) and frontend ($frontendUrl) in default browser."
+} catch {
+    Warn "Could not automatically open the browser: $($_.Exception.Message)"
+    Write-Host "Open these manually:"
+    Write-Host "  Admin : $adminUrl"
+    Write-Host "  Front : $frontendUrl"
+}
 
 Write-Host ""
 Write-Host "============================================================" -ForegroundColor Green

@@ -218,7 +218,7 @@
               <div class="field field-full">
                 <label for="subCategory">Category &amp; Sub-Category <span>*</span></label>
                 <select id="subCategory" required>
-                  <option value="">Loading categories and sub-categories...</option>
+                  <option value="">Select Sub-Category</option>
                 </select>
               </div>
 
@@ -317,7 +317,7 @@
                 <div class="field">
                   <label for="parentCategory">Parent Category <span>*</span></label>
                   <select id="parentCategory" required>
-                    <option value="">Loading categories...</option>
+                    <option value="">Select Category</option>
                   </select>
                 </div>
                 <div class="field">
@@ -480,37 +480,6 @@
     </footer>
   </div>
 
-  <!-- Resource Status Log Modal (04 · Library "View Log" action) -->
-  <div id="statusLogModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="statusLogModalTitle" aria-modal="true">
-    <div class="modal-backdrop" id="statusLogModalBackdrop"></div>
-    <div class="modal-panel" role="document">
-      <header class="modal-header">
-        <h3 id="statusLogModalTitle">Resource status log</h3>
-      </header>
-      <div class="modal-body">
-        <p id="statusLogResourceLabel" class="field-note"></p>
-        <div class="table-scroll">
-          <table id="statusLogTable">
-            <thead>
-              <tr>
-                <th>When</th>
-                <th>Status</th>
-                <th>Note</th>
-                <th>Actor</th>
-              </tr>
-            </thead>
-            <tbody id="statusLogTableBody">
-              <tr><td colspan="4">Loading…</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <footer class="modal-footer">
-        <button id="statusLogCloseBtn" type="button" class="button">Close</button>
-      </footer>
-    </div>
-  </div>
-
   <!-- Confirmation Modal -->
   <div id="dangerModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="dangerModalTitle" aria-modal="true">
     <div class="modal-backdrop" id="dangerModalBackdrop"></div>
@@ -533,7 +502,6 @@
     </div>
   </div>
 
-  <script src="js/populate_categories.js"></script>
   <script src="js/admin.js"></script>
 </body>
 </html>

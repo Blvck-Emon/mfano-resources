@@ -1,362 +1,176 @@
 <?php
 /**
- * Backend+AdminPanel/api/admin/resources.php
- * Unified Admin API Endpoint for Creating, Updating, Retrieving, and Deleting Resources
+ * api/admin/resources.php
+ *
+ * POST   /api/admin/resources.php             - create a resource
+ *          multipart/form-data with a "file" field -> uploads and stores
+ *          a PDF directly on this server (storage_type = 'local')
+ *          application/json with "file_url"          -> links an already
+ *          hosted PDF, e.g. S3/Cloudinary (storage_type = 'external')
+ * PUT    /api/admin/resources.php?id=5         - update a resource
+ * DELETE /api/admin/resources.php?id=5         - delete a resource
+ *
+ * Every request must include the header: X-Api-Key: <ADMIN_API_KEY>
+ *
+ * Refactor notes (Postgres -> SQLite):
+ *   - `... RETURNING *` is dropped in favour of lastInsertId() + a follow-up
+ *     SELECT, which works identically across PHP/SQLite builds regardless
+ *     of whether the bundled SQLite supports the RETURNING clause.
+ *   - is_featured / is_published now bind as 1/0 integers, not 'true'/'false'.
+ *   - Postgres unique_violation code '23505' -> SQLite's is '23000' (PDO
+ *     normalises both to a generic string; we check the driver-specific
+ *     SQLSTATE via $e->errorInfo[1] === 19, SQLite's constraint-violation code).
  */
 
 require_once __DIR__ . '/../../config/db.php';
+require_once __DIR__ . '/../../includes/helpers.php';
+require_once __DIR__ . '/../../includes/auth.php';
+require_once __DIR__ . '/../../includes/upload.php';
 
-// Dynamically include helper modules if available in ecosystem
-if (file_exists(__DIR__ . '/../../includes/helpers.php')) {
-    require_once __DIR__ . '/../../includes/helpers.php';
-}
-if (file_exists(__DIR__ . '/../../includes/auth.php')) {
-    require_once __DIR__ . '/../../includes/auth.php';
-}
-if (file_exists(__DIR__ . '/../../includes/upload.php')) {
-    require_once __DIR__ . '/../../includes/upload.php';
-}
+applyCors();
+requireAdminKey();
 
-// -------------------------------------------------------------------------
-// 1. CORS & HTTP Method Setup
-// -------------------------------------------------------------------------
-if (function_exists('applyCors')) {
-    applyCors();
-} else {
-    header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-    header('Access-Control-Allow-Headers: Content-Type, X-Api-Key, X-Admin-Api-Key');
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(200);
-    exit();
-}
-
-// -------------------------------------------------------------------------
-// 2. Authentication Verification
-// -------------------------------------------------------------------------
-if (function_exists('requireAdminKey')) {
-    requireAdminKey();
-} else {
-    $apiKey = $_SERVER['HTTP_X_API_KEY'] ?? $_SERVER['HTTP_X_ADMIN_API_KEY'] ?? ($_GET['api_key'] ?? '');
-    $validKey = getenv('ADMIN_API_KEY') ?: 'admin123';
-    
-    if (empty($apiKey) || $apiKey !== $validKey) {
-        http_response_code(401);
-        header('Content-Type: application/json');
-        echo json_encode(['success' => false, 'error' => 'Unauthorized: Invalid Admin API Key']);
-        exit();
-    }
-}
-
-// -------------------------------------------------------------------------
-// 3. Database Connection & Request Router
-// -------------------------------------------------------------------------
-$pdo = function_exists('getDbConnection') ? getDbConnection() : ($pdo ?? null);
-if (!$pdo && isset($db)) {
-    $pdo = $db;
-}
-
+$pdo = getDbConnection();
 $method = $_SERVER['REQUEST_METHOD'];
-$id = isset($_GET['id']) && is_numeric($_GET['id']) ? (int) $_GET['id'] : null;
+$id = isset($_GET['id']) ? (int) $_GET['id'] : null;
 
-switch ($method) {
-    case 'POST':
-        handleCreateResource($pdo);
-        break;
-    case 'PUT':
-        if (!$id) {
-            respondJson(['success' => false, 'error' => 'Missing resource ID for update.'], 400);
-        }
-        handleUpdateResource($pdo, $id);
-        break;
-    case 'DELETE':
-        if (!$id) {
-            respondJson(['success' => false, 'error' => 'Missing resource ID for deletion.'], 400);
-        }
-        handleDeleteResource($pdo, $id);
-        break;
-    case 'GET':
-        handleGetResources($pdo, $id);
-        break;
-    default:
-        respondJson(['success' => false, 'error' => 'Method not allowed'], 405);
+if ($method === 'POST') {
+    createResource($pdo);
+} elseif ($method === 'PUT' && $id) {
+    updateResource($pdo, $id);
+} elseif ($method === 'DELETE' && $id) {
+    deleteResource($pdo, $id);
+} else {
+    sendError('Method not allowed', 405);
 }
 
-// -------------------------------------------------------------------------
-// 4. Controller Functions
-// -------------------------------------------------------------------------
-
-/**
- * Handles Resource Creation (POST)
- */
-function handleCreateResource(PDO $pdo): void
+function createResource(PDO $pdo): void
 {
-    $payload = getPayload();
+    $isMultipart = str_starts_with($_SERVER['CONTENT_TYPE'] ?? '', 'multipart/form-data');
+    $body = $isMultipart ? $_POST : getJsonBody();
 
-    $subCategoryId = filter_var($payload['sub_category_id'] ?? null, FILTER_VALIDATE_INT);
-    $title         = trim($payload['title'] ?? '');
-    $description   = trim($payload['description'] ?? '');
-    $fileUrl       = trim($payload['file_url'] ?? '');
-    $isFeatured    = !empty($payload['is_featured']) && $payload['is_featured'] !== 'false' && $payload['is_featured'] !== '0' ? 1 : 0;
+    $subCategoryId = $body['sub_category_id'] ?? null;
+    $title = $body['title'] ?? null;
+    $description = $body['description'] ?? null;
+    $isFeatured = !empty($body['is_featured']) && $body['is_featured'] !== 'false' ? 1 : 0;
 
-    if (!$subCategoryId || empty($title) || empty($description)) {
-        respondJson(['success' => false, 'error' => 'Missing required fields: Title, Sub-Category, and Description are mandatory.'], 400);
+    if (!$subCategoryId || !$title || !$description) {
+        sendError('sub_category_id, title, and description are required.', 400);
     }
 
-    $storageType = 'external';
-    $filePath    = null;
-    $checksum    = null;
-    $fileSizeKb  = 0;
-
-    // Direct PDF Upload Handling
-    if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
-        if (function_exists('storeUploadedPdf')) {
-            $stored      = storeUploadedPdf($_FILES['file']);
-            $fileUrl     = $stored['file_url'] ?? $fileUrl;
-            $storageType = 'local';
-            $filePath    = $stored['stored_path'] ?? $stored['file_path'] ?? null;
-            $checksum    = $stored['checksum_sha256'] ?? null;
-            $fileSizeKb  = $stored['file_size_kb'] ?? 0;
-        } else {
-            $file = $_FILES['file'];
-            $ext  = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-
-            if ($ext !== 'pdf') {
-                respondJson(['success' => false, 'error' => 'Only PDF files are allowed.'], 400);
-            }
-
-            // Establish Absolute Upload Directory
-            $uploadDir = __DIR__ . '/../../uploads/resources/';
-            if (!file_exists($uploadDir)) {
-                mkdir($uploadDir, 0755, true);
-            }
-
-            $newFileName = uniqid('res_', true) . '.pdf';
-            $targetFile  = $uploadDir . $newFileName;
-
-            if (move_uploaded_file($file['tmp_name'], $targetFile)) {
-                $storageType = 'local';
-                $filePath    = 'uploads/resources/' . $newFileName;
-                if (empty($fileUrl)) {
-                    $fileUrl = $filePath;
-                }
-                $checksum   = hash_file('sha256', $targetFile);
-                $fileSizeKb = (int) ceil(filesize($targetFile) / 1024);
-            } else {
-                respondJson(['success' => false, 'error' => 'Failed to save uploaded PDF to disk.'], 500);
-            }
-        }
-    } elseif (!empty($fileUrl)) {
-        $storageType = 'external';
-        $fileSizeKb  = (int) ($payload['file_size_kb'] ?? 0);
+    // Path A: a PDF was attached directly -> store it on this server.
+    if ($isMultipart && !empty($_FILES['file'])) {
+        $stored = storeUploadedPdf($_FILES['file']);
+        $fileUrl = $stored['file_url'];
+        $storageType = 'local';
+        $storedPath = $stored['stored_path'];
+        $checksum = $stored['checksum_sha256'];
+        $fileSizeKb = $stored['file_size_kb'];
     } else {
-        respondJson(['success' => false, 'error' => 'Either a PDF file upload or an existing file URL must be provided.'], 400);
+        // Path B: an already-hosted URL (S3/Cloudinary/etc), same as before.
+        $fileUrl = $body['file_url'] ?? null;
+        if (!$fileUrl) {
+            sendError('Provide either a "file" upload or a "file_url".', 400);
+        }
+        $storageType = 'external';
+        $storedPath = null;
+        $checksum = null;
+        $fileSizeKb = (int) ($body['file_size_kb'] ?? 0);
     }
 
     try {
-        // Dual column population for maximum schema compatibility (file_path & stored_path)
-        $sql = "INSERT INTO resources (
-            sub_category_id, title, description, storage_type, 
-            file_path, stored_path, file_url, checksum_sha256, 
-            file_size_kb, is_featured, is_published, download_count, created_at
-        ) VALUES (
-            :sub_category_id, :title, :description, :storage_type, 
-            :file_path, :stored_path, :file_url, :checksum_sha256, 
-            :file_size_kb, :is_featured, 1, 0, CURRENT_TIMESTAMP
-        )";
-
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([
-            ':sub_category_id' => $subCategoryId,
-            ':title'           => $title,
-            ':description'     => $description,
-            ':storage_type'    => $storageType,
-            ':file_path'       => $filePath,
-            ':stored_path'     => $filePath,
-            ':file_url'        => $fileUrl,
-            ':checksum_sha256' => $checksum,
-            ':file_size_kb'    => $fileSizeKb,
-            ':is_featured'     => $isFeatured
+        $insert = $pdo->prepare(
+            'INSERT INTO resources
+                (sub_category_id, title, description, file_url, storage_type,
+                 stored_path, checksum_sha256, file_size_kb, is_featured)
+             VALUES
+                (:sub_category_id, :title, :description, :file_url, :storage_type,
+                 :stored_path, :checksum_sha256, :file_size_kb, :is_featured)'
+        );
+        $insert->execute([
+            'sub_category_id' => $subCategoryId,
+            'title'           => $title,
+            'description'     => $description,
+            'file_url'        => $fileUrl,
+            'storage_type'    => $storageType,
+            'stored_path'     => $storedPath,
+            'checksum_sha256' => $checksum,
+            'file_size_kb'    => $fileSizeKb,
+            'is_featured'     => $isFeatured,
         ]);
 
         $newId = (int) $pdo->lastInsertId();
+        $row = $pdo->prepare('SELECT * FROM resources WHERE id = :id');
+        $row->execute(['id' => $newId]);
 
-        $fetchStmt = $pdo->prepare("SELECT * FROM resources WHERE id = :id");
-        $fetchStmt->execute([':id' => $newId]);
-        $createdResource = $fetchStmt->fetch(PDO::FETCH_ASSOC);
-
-        respondJson([
-            'success' => true,
-            'id'      => $newId,
-            'message' => 'Resource created successfully.',
-            'data'    => $createdResource
-        ], 201);
-
+        sendSuccess($row->fetch(), null, 201);
     } catch (PDOException $e) {
-        if (isset($e->errorInfo[1]) && $e->errorInfo[1] === 19) {
-            respondJson(['success' => false, 'error' => 'Resource constraint violation or duplicate entry.'], 400);
-        }
-        respondJson(['success' => false, 'error' => 'Database insert error: ' . $e->getMessage()], 500);
-    } catch (Exception $e) {
-        respondJson(['success' => false, 'error' => 'Server error: ' . $e->getMessage()], 500);
+        error_log($e->getMessage());
+        sendError('Failed to create resource');
     }
 }
 
-/**
- * Handles Resource Updates (PUT)
- */
-function handleUpdateResource(PDO $pdo, int $id): void
+function updateResource(PDO $pdo, int $id): void
 {
-    $payload = getPayload();
+    $body = getJsonBody();
 
     try {
-        $fetchStmt = $pdo->prepare("SELECT * FROM resources WHERE id = :id");
-        $fetchStmt->execute([':id' => $id]);
-        $existing = $fetchStmt->fetch(PDO::FETCH_ASSOC);
+        $update = $pdo->prepare(
+            'UPDATE resources
+             SET sub_category_id = :sub_category_id, title = :title, description = :description,
+                 file_url = :file_url, is_featured = :is_featured, is_published = :is_published
+             WHERE id = :id'
+        );
+        $update->execute([
+            'sub_category_id' => $body['sub_category_id'] ?? null,
+            'title'           => $body['title'] ?? null,
+            'description'     => $body['description'] ?? null,
+            'file_url'        => $body['file_url'] ?? null,
+            'is_featured'     => !empty($body['is_featured']) ? 1 : 0,
+            'is_published'    => array_key_exists('is_published', $body) && !$body['is_published'] ? 0 : 1,
+            'id'              => $id,
+        ]);
 
-        if (!$existing) {
-            respondJson(['success' => false, 'error' => 'Resource not found'], 404);
+        $row = $pdo->prepare('SELECT * FROM resources WHERE id = :id');
+        $row->execute(['id' => $id]);
+        $result = $row->fetch();
+
+        if (!$result) {
+            sendError('Resource not found', 404);
         }
 
-        $subCategoryId = filter_var($payload['sub_category_id'] ?? $existing['sub_category_id'], FILTER_VALIDATE_INT);
-        $title         = trim($payload['title'] ?? $existing['title']);
-        $description   = trim($payload['description'] ?? $existing['description']);
-        $fileUrl       = trim($payload['file_url'] ?? $existing['file_url']);
-        $isFeatured    = isset($payload['is_featured']) ? (!empty($payload['is_featured']) && $payload['is_featured'] !== 'false' ? 1 : 0) : $existing['is_featured'];
-        $isPublished   = array_key_exists('is_published', $payload) ? (!empty($payload['is_published']) && $payload['is_published'] !== 'false' ? 1 : 0) : $existing['is_published'];
-
-        $updateStmt = $pdo->prepare("
-            UPDATE resources
-            SET sub_category_id = :sub_category_id,
-                title = :title,
-                description = :description,
-                file_url = :file_url,
-                is_featured = :is_featured,
-                is_published = :is_published
-            WHERE id = :id
-        ");
-        $updateStmt->execute([
-            ':sub_category_id' => $subCategoryId,
-            ':title'           => $title,
-            ':description'     => $description,
-            ':file_url'        => $fileUrl,
-            ':is_featured'     => $isFeatured,
-            ':is_published'    => $isPublished,
-            ':id'              => $id
-        ]);
-
-        $rowStmt = $pdo->prepare("SELECT * FROM resources WHERE id = :id");
-        $rowStmt->execute([':id' => $id]);
-        $updatedResource = $rowStmt->fetch(PDO::FETCH_ASSOC);
-
-        respondJson([
-            'success' => true,
-            'message' => 'Resource updated successfully.',
-            'data'    => $updatedResource
-        ]);
-    } catch (Exception $e) {
-        respondJson(['success' => false, 'error' => 'Failed to update resource: ' . $e->getMessage()], 500);
+        sendSuccess($result);
+    } catch (PDOException $e) {
+        error_log($e->getMessage());
+        sendError('Failed to update resource');
     }
 }
 
-/**
- * Handles Resource Deletion (DELETE)
- */
-function handleDeleteResource(PDO $pdo, int $id): void
+function deleteResource(PDO $pdo, int $id): void
 {
     try {
-        $stmt = $pdo->prepare("SELECT * FROM resources WHERE id = :id");
-        $stmt->execute([':id' => $id]);
-        $resource = $stmt->fetch(PDO::FETCH_ASSOC);
+        $find = $pdo->prepare('SELECT * FROM resources WHERE id = :id');
+        $find->execute(['id' => $id]);
+        $resource = $find->fetch();
 
         if (!$resource) {
-            respondJson(['success' => false, 'error' => 'Resource not found.'], 404);
+            sendError('Resource not found', 404);
         }
 
-        // Unlink local file from disk if present
-        $pathToCheck = !empty($resource['file_path']) ? $resource['file_path'] : ($resource['stored_path'] ?? null);
-        if ($pathToCheck) {
-            $fileOnDisk = __DIR__ . '/../../' . ltrim($pathToCheck, '/');
-            if (file_exists($fileOnDisk) && is_file($fileOnDisk)) {
-                @unlink($fileOnDisk);
+        $delete = $pdo->prepare('DELETE FROM resources WHERE id = :id');
+        $delete->execute(['id' => $id]);
+
+        // Best-effort cleanup of the file on disk for locally uploaded PDFs.
+        if ($resource['storage_type'] === 'local' && $resource['stored_path']) {
+            $absolutePath = __DIR__ . '/../../' . ltrim($resource['stored_path'], '/');
+            if (is_file($absolutePath)) {
+                @unlink($absolutePath);
             }
         }
 
-        $delStmt = $pdo->prepare("DELETE FROM resources WHERE id = :id");
-        $delStmt->execute([':id' => $id]);
-
-        respondJson([
-            'success' => true,
-            'message' => 'Resource deleted successfully.'
-        ]);
-    } catch (Exception $e) {
-        respondJson(['success' => false, 'error' => 'Failed to delete resource: ' . $e->getMessage()], 500);
+        sendJson(['success' => true, 'message' => 'Resource deleted successfully']);
+    } catch (PDOException $e) {
+        error_log($e->getMessage());
+        sendError('Failed to delete resource');
     }
-}
-
-/**
- * Handles Resource Retrieval (GET)
- */
-function handleGetResources(PDO $pdo, ?int $id): void
-{
-    try {
-        if ($id) {
-            $stmt = $pdo->prepare("SELECT * FROM resources WHERE id = :id");
-            $stmt->execute([':id' => $id]);
-            $resource = $stmt->fetch(PDO::FETCH_ASSOC);
-            if (!$resource) {
-                respondJson(['success' => false, 'error' => 'Resource not found'], 404);
-            }
-            respondJson(['success' => true, 'data' => $resource]);
-        } else {
-            $stmt = $pdo->query("SELECT * FROM resources ORDER BY id DESC");
-            $resources = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            respondJson(['success' => true, 'count' => count($resources), 'data' => $resources]);
-        }
-    } catch (Exception $e) {
-        respondJson(['success' => false, 'error' => 'Failed to fetch resources: ' . $e->getMessage()], 500);
-    }
-}
-
-// -------------------------------------------------------------------------
-// 5. Shared Utility Helpers
-// -------------------------------------------------------------------------
-
-/**
- * Sends a standardized JSON response
- */
-function respondJson($data, int $statusCode = 200): void
-{
-    if (function_exists('sendSuccess') && isset($data['success']) && $data['success'] && $statusCode === 200) {
-        sendSuccess($data['data'] ?? $data, $data['message'] ?? null, $statusCode);
-        return;
-    }
-    if (function_exists('sendError') && isset($data['success']) && !$data['success']) {
-        sendError($data['error'] ?? 'An error occurred', $statusCode);
-        return;
-    }
-    
-    http_response_code($statusCode);
-    header('Content-Type: application/json');
-    echo json_encode($data);
-    exit();
-}
-
-/**
- * Parses request payload regardless of content type (Form-Data or JSON)
- */
-function getPayload(): array
-{
-    $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
-    if (str_starts_with($contentType, 'multipart/form-data')) {
-        return $_POST;
-    }
-    if (function_exists('getJsonBody')) {
-        return getJsonBody() ?: [];
-    }
-    $raw = file_get_contents('php://input');
-    $data = json_decode($raw, true);
-    return is_array($data) ? $data : [];
 }

@@ -5,14 +5,23 @@
  * Features:
  * - Mobile navigation menu toggle.
  * - Intersection Observer card animations.
- * - Nested resource fetching & hierarchical rendering (categories -> sub_categories -> resources)[cite: 17].
+ * - Nested resource fetching & hierarchical rendering (categories -> sub_categories -> resources).
  * - Live search/filtering across resource cards.
- * - Right-hand in-page tabbed document viewer for PDF streaming (?action=view)[cite: 17].
- * - Direct download trigger with server-side audit logging (?action=download)[cite: 17].
+ * - Right-hand in-page tabbed document viewer for PDF streaming (?action=view).
+ * - Direct download trigger with se rver-side audit logging (?action=download).
  */
 
 document.addEventListener('DOMContentLoaded', function () {
-  const API_BASE = window.location.origin + '/Backend+AdminPanel/api';
+  // Determine API base dynamically (works whether server root is repo root or Backend+AdminPanel)
+const API_BASE = (function () {
+  const origin = window.location.origin;
+  // If the page is already under /Backend+AdminPanel, use that API path
+  if (window.location.pathname.indexOf('/Backend+AdminPanel/') !== -1) {
+    return origin + '/Backend+AdminPanel/api';
+  }
+  // Otherwise assume API is at /api (common when the docroot is Backend+AdminPanel)
+  return origin + '/api';
+})();
   
   // DOM Elements
   const catsContainer = document.getElementById('categoriesContainer');
