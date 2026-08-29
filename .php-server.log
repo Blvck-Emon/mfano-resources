@@ -1,66 +1,57 @@
-[Fri Aug 28 15:54:44 2026] PHP Warning:  PHP Startup: Unable to load dynamic library 'pdo_sqlite' (tried: /usr/lib/php/20230831/pdo_sqlite (/usr/lib/php/20230831/pdo_sqlite: cannot open shared object file: No such file or directory), /usr/lib/php/20230831/pdo_sqlite.so (/usr/lib/php/20230831/pdo_sqlite.so: undefined symbol: php_pdo_unregister_driver)) in Unknown on line 0
-[Fri Aug 28 15:54:44 2026] PHP Warning:  Module "sqlite3" is already loaded in Unknown on line 0
-[Fri Aug 28 15:54:44 2026] PHP 8.3.6 Development Server (http://127.0.0.1:8000) started
-[Fri Aug 28 15:54:45 2026] 127.0.0.1:52208 Accepted
-[Fri Aug 28 15:54:45 2026] 127.0.0.1:52208 [200]: GET /Backend+AdminPanel/api/health.php
-[Fri Aug 28 15:54:45 2026] 127.0.0.1:52208 Closing
-[Fri Aug 28 15:54:45 2026] 127.0.0.1:52214 Accepted
-[Fri Aug 28 15:54:45 2026] 127.0.0.1:52214 [200]: GET /frontend/index.php
-[Fri Aug 28 15:54:45 2026] 127.0.0.1:52214 Closing
-[Fri Aug 28 15:54:45 2026] 127.0.0.1:52224 Accepted
-[Fri Aug 28 15:54:45 2026] 127.0.0.1:52224 [200]: GET /Backend+AdminPanel/admin/index.html
-[Fri Aug 28 15:54:45 2026] 127.0.0.1:52224 Closing
-[Fri Aug 28 15:54:45 2026] 127.0.0.1:52240 Accepted
-[Fri Aug 28 15:54:45 2026] 127.0.0.1:52240 [200]: GET /Backend+AdminPanel/admin/js/populate_categories.js
-[Fri Aug 28 15:54:45 2026] 127.0.0.1:52240 Closing
-[Fri Aug 28 15:54:45 2026] 127.0.0.1:52244 Accepted
-[Fri Aug 28 15:54:45 2026] 127.0.0.1:52244 [200]: GET /Backend+AdminPanel/admin/css/admin.css
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52244 Closing
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52248 Accepted
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52248 [200]: GET /Backend+AdminPanel/admin/js/admin.js
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52248 Closing
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52252 Accepted
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52252 [200]: GET /Backend+AdminPanel/admin/js/load_logs.js
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52252 Closing
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52264 Accepted
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52264 [200]: GET /Backend+AdminPanel/admin/logo.png
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52264 Closing
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52278 Accepted
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52280 Accepted
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52278 [200]: GET /Backend+AdminPanel/api/categories.php
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52278 Closing
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52282 Accepted
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52280 [200]: GET /Backend+AdminPanel/api/resources.php
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52280 Closing
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52286 Accepted
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52282 [500]: GET /Backend+AdminPanel/api/admin/logs.php
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52282 Closing
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52290 Accepted
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52286 [404]: GET /Backend+AdminPanel/api/admin/stats.php - No such file or directory
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52292 Accepted
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52290 [200]: GET /Backend+AdminPanel/api/categories.php
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52290 Closing
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52286 Closing
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52292 [500]: GET /Backend+AdminPanel/api/admin/logs.php?limit=500
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52292 Closing
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52306 Accepted
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52306 [200]: GET /Backend+AdminPanel/api/health.php
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52306 Closing
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52312 Accepted
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52312 [200]: GET /frontend/index.php
-[Fri Aug 28 15:54:46 2026] 127.0.0.1:52312 Closing
-[Fri Aug 28 15:54:47 2026] 127.0.0.1:52322 Accepted
-[Fri Aug 28 15:54:47 2026] 127.0.0.1:52322 [200]: GET /frontend/css/style.css?v=1787921686
-[Fri Aug 28 15:54:47 2026] 127.0.0.1:52322 Closing
-[Fri Aug 28 15:54:47 2026] 127.0.0.1:52334 Accepted
-[Fri Aug 28 15:54:47 2026] 127.0.0.1:52334 [200]: GET /frontend/js/resources.js
-[Fri Aug 28 15:54:47 2026] 127.0.0.1:52334 Closing
-[Fri Aug 28 15:54:47 2026] 127.0.0.1:52336 Accepted
-[Fri Aug 28 15:54:47 2026] 127.0.0.1:52336 [200]: GET /frontend/mfano9.jpeg
-[Fri Aug 28 15:54:47 2026] 127.0.0.1:52350 Accepted
-[Fri Aug 28 15:54:47 2026] 127.0.0.1:52336 Closing
-[Fri Aug 28 15:54:47 2026] 127.0.0.1:52350 [200]: GET /frontend/logo.png
-[Fri Aug 28 15:54:47 2026] 127.0.0.1:52350 Closing
-[Fri Aug 28 15:55:28 2026] 127.0.0.1:33602 Accepted
-[Fri Aug 28 15:55:28 2026] 127.0.0.1:33602 [500]: POST /Backend+AdminPanel/api/admin/resources.php
-[Fri Aug 28 15:55:28 2026] 127.0.0.1:33602 Closing
+[Sat Aug 29 14:45:40 2026] PHP Warning:  PHP Startup: Unable to load dynamic library 'pdo_sqlite' (tried: /usr/lib/php/20230831/pdo_sqlite (/usr/lib/php/20230831/pdo_sqlite: cannot open shared object file: No such file or directory), /usr/lib/php/20230831/pdo_sqlite.so (/usr/lib/php/20230831/pdo_sqlite.so: undefined symbol: php_pdo_unregister_driver)) in Unknown on line 0
+[Sat Aug 29 14:45:40 2026] PHP Warning:  Module "sqlite3" is already loaded in Unknown on line 0
+[Sat Aug 29 14:45:40 2026] PHP 8.3.6 Development Server (http://127.0.0.1:8000) started
+[Sat Aug 29 14:45:41 2026] 127.0.0.1:55648 Accepted
+[Sat Aug 29 14:45:41 2026] 127.0.0.1:55648 [200]: GET /Backend+AdminPanel/api/health.php
+[Sat Aug 29 14:45:41 2026] 127.0.0.1:55648 Closing
+[Sat Aug 29 14:45:41 2026] 127.0.0.1:55650 Accepted
+[Sat Aug 29 14:45:41 2026] 127.0.0.1:55650 [200]: GET /frontend/index.php
+[Sat Aug 29 14:45:41 2026] 127.0.0.1:55650 Closing
+[Sat Aug 29 14:45:42 2026] 127.0.0.1:55664 Accepted
+[Sat Aug 29 14:45:42 2026] 127.0.0.1:55664 [200]: GET /Backend+AdminPanel/admin/index.html
+[Sat Aug 29 14:45:42 2026] 127.0.0.1:55664 Closing
+[Sat Aug 29 14:45:42 2026] 127.0.0.1:55672 Accepted
+[Sat Aug 29 14:45:42 2026] 127.0.0.1:55672 [200]: GET /Backend+AdminPanel/admin/css/admin.css
+[Sat Aug 29 14:45:42 2026] 127.0.0.1:55688 Accepted
+[Sat Aug 29 14:45:42 2026] 127.0.0.1:55688 [200]: GET /Backend+AdminPanel/admin/js/admin.js
+[Sat Aug 29 14:45:42 2026] 127.0.0.1:55672 Closing
+[Sat Aug 29 14:45:42 2026] 127.0.0.1:55688 Closing
+[Sat Aug 29 14:45:42 2026] 127.0.0.1:55696 Accepted
+[Sat Aug 29 14:45:42 2026] 127.0.0.1:55696 [200]: GET /Backend+AdminPanel/admin/logo.png
+[Sat Aug 29 14:45:42 2026] 127.0.0.1:55696 Closing
+[Sat Aug 29 14:45:43 2026] 127.0.0.1:55702 Accepted
+[Sat Aug 29 14:45:43 2026] 127.0.0.1:55704 Accepted
+[Sat Aug 29 14:45:43 2026] 127.0.0.1:55702 [200]: GET /Backend+AdminPanel/api/categories.php
+[Sat Aug 29 14:45:43 2026] 127.0.0.1:55702 Closing
+[Sat Aug 29 14:45:43 2026] 127.0.0.1:55710 Accepted
+[Sat Aug 29 14:45:43 2026] 127.0.0.1:55704 [200]: GET /Backend+AdminPanel/api/resources.php
+[Sat Aug 29 14:45:43 2026] 127.0.0.1:55704 Closing
+[Sat Aug 29 14:45:43 2026] 127.0.0.1:55710 [200]: GET /frontend/index.php
+[Sat Aug 29 14:45:43 2026] 127.0.0.1:55710 Closing
+[Sat Aug 29 14:45:43 2026] 127.0.0.1:55714 Accepted
+[Sat Aug 29 14:45:43 2026] 127.0.0.1:55714 [200]: GET /Backend+AdminPanel/api/admin/logs.php?limit=100
+[Sat Aug 29 14:45:43 2026] 127.0.0.1:55714 Closing
+[Sat Aug 29 14:45:43 2026] 127.0.0.1:55720 Accepted
+[Sat Aug 29 14:45:43 2026] 127.0.0.1:55720 [200]: GET /frontend/css/style.css?v=1788003943
+[Sat Aug 29 14:45:43 2026] 127.0.0.1:55720 Closing
+[Sat Aug 29 14:45:43 2026] 127.0.0.1:55722 Accepted
+[Sat Aug 29 14:45:43 2026] 127.0.0.1:55722 [200]: GET /frontend/js/resources.js
+[Sat Aug 29 14:45:43 2026] 127.0.0.1:55722 Closing
+[Sat Aug 29 14:45:43 2026] 127.0.0.1:43724 Accepted
+[Sat Aug 29 14:45:43 2026] 127.0.0.1:43728 Accepted
+[Sat Aug 29 14:45:43 2026] 127.0.0.1:43724 [200]: GET /frontend/logo.png
+[Sat Aug 29 14:45:43 2026] 127.0.0.1:43728 [200]: GET /Backend+AdminPanel/api/admin/logs.php?limit=100
+[Sat Aug 29 14:45:43 2026] 127.0.0.1:43728 Closing
+[Sat Aug 29 14:45:43 2026] 127.0.0.1:43724 Closing
+[Sat Aug 29 14:45:44 2026] 127.0.0.1:43738 Accepted
+[Sat Aug 29 14:45:44 2026] 127.0.0.1:43738 [200]: GET /frontend/mfano9.jpeg
+[Sat Aug 29 14:45:44 2026] 127.0.0.1:43738 Closing
+[Sat Aug 29 14:46:05 2026] 127.0.0.1:42736 Accepted
+[Sat Aug 29 14:46:05 2026] 127.0.0.1:42736 [200]: GET /frontend/documents.php?category=forms-templates
+[Sat Aug 29 14:46:05 2026] 127.0.0.1:42736 Closing
+[Sat Aug 29 14:46:05 2026] 127.0.0.1:42742 Accepted
+[Sat Aug 29 14:46:05 2026] 127.0.0.1:42742 [200]: GET /frontend/css/style.css?v=1788003965
+[Sat Aug 29 14:46:05 2026] 127.0.0.1:42742 Closing
+[Sat Aug 29 14:46:05 2026] 127.0.0.1:42756 Accepted
+[Sat Aug 29 14:46:05 2026] 127.0.0.1:42756 [200]: GET /frontend/logo.png
+[Sat Aug 29 14:46:05 2026] 127.0.0.1:42756 Closing
