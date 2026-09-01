@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <meta name="theme-color" content="#0b1c35">
+  <title>Mfano Bora Resources — Admin Panel</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <!-- GLOBAL Mfano Bora NAVIGATION -->
+  <nav id="mainNav">
+      <div class="nav-container">
+          <a href="/" class="nav-logo">
+              <img src="logo.png" alt="Mfano Bora Logo" class="brand-mark-small">
+              <div class="site-brand">
+                  <span class="site-name">Mfano Africa ICT Hub</span>
+              </div>
+          </a>
+
+          <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
+              <span></span>
+              <span></span>
+              <span></span>
+          </button>
+
+          <ul class="nav-links" id="navLinks">
+              <li><a href="/" class="active">Home</a></li>
+              <li><a href="/hub/">The Hub</a></li>
+              
+              <li class="nav-dropdown">
+                  <button class="nav-dropdown-toggle" type="button" aria-expanded="false" aria-haspopup="true">
+                      Logistics & Transport Awards
+                  </button>
+                  <ul class="nav-dropdown-menu" id="awardsSubmenu">
+                      <li><a href="/awards/">Logistics & Transport Awards</a></li>
+                      <li><a href="/safety/">Road Safety Club</a></li>
+                      <li><a href="/gallery/">Gallery</a></li>
+                  </ul>
+              </li>
+
+              <li><a href="/consultancy/">Consultation</a></li>
+
+              <li class="nav-dropdown">
+                  <button class="nav-dropdown-toggle" type="button" aria-expanded="false" aria-haspopup="true">
+                      Attachments
+                  </button>
+                  <ul class="nav-dropdown-menu" id="careerSubmenu">
+                      <li><a href="/attachment/">Attachment</a></li>
+                      <li><a href="/internship/">Internship</a></li>
+                      <li><a href="/employment/">Employment</a></li>
+                  </ul>
+              </li>
+
+              <li><a href="/blog/">Blog</a></li>
+
+              <li class="nav-search-item">
+                  <button type="button" class="nav-search-toggle" id="searchToggle" aria-label="Open search" aria-haspopup="dialog" aria-expanded="false">
+                      <svg class="search-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                          <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+                          <line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                      </svg>
+                      <span class="search-label">Search</span>
+                  </button>
+              </li>
+
+              <li><a href="/contact-us/" class="nav-cta">Get In Touch</a></li>
+          </ul>
+      </div>
+  </nav>
+  <div class="nav-overlay" id="navOverlay"></div>
+
+  <!-- SEARCH MODAL -->
+  <div class="search-modal-overlay" id="searchModalOverlay">
+      <div class="search-modal" id="searchModal" role="dialog" aria-modal="true" aria-label="Site search">
+          <button type="button" class="search-modal-close" id="searchModalClose" aria-label="Close search">&times;</button>
+          <form class="search-modal-form" id="searchModalForm" action="/search/" method="GET" role="search">
+              <svg class="search-modal-form-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
+                  <line x1="16.65" y1="16.65" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <input type="text" name="q" id="searchModalInput" class="search-modal-input" placeholder="Search pages, services, trainings, attachments..." autocomplete="off" aria-label="Search pages, services, trainings, attachments">
+              <button type="submit" class="search-modal-submit" aria-label="Submit search">Search</button>
+          </form>
+      </div>
+  </div>
+
+  <div class="page-shell">
+    <!-- RESOURCE ADMIN PAGE TITLE HEADER -->
+    <header class="topbar">
+      <div class="topbar-brand">
+        <img src="logo.png" alt="Mfano Bora Logo" class="brand-mark">
+        <div>
+          <div class="eyebrow">Mfano Bora Africa</div>
+          <h1>Mfano Bora <span>Resources</span></h1>
+        </div>
+      </div>
+
+      <div class="topbar-meta">
+        <div class="system-status"><span class="status-dot"></span> SQLite backend</div>
+        <div class="system-copy">Admin workspace</div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="hero-intro">
+        <div>
+          <p class="eyebrow dark">Resource administration</p>
+          <h2>Manage your resource library from one workspace.</h2>
+          <p class="hero-copy">Upload PDFs, maintain categories, review download activity, and keep published content organized.</p>
+        </div>
+        <div class="hero-chip">Vibrant modern interface</div>
+      </section>
+
+      <!-- SECURITY MODULE -->
+      <section class="module module-security" aria-labelledby="securityTitle">
+        <div class="module-header">
+          <div>
+            <p class="module-kicker">01 · Access</p>
+            <h3 id="securityTitle">Admin Access</h3>
+            <p>Authenticate frontend requests to the protected admin API.</p>
+          </div>
+          <span class="module-badge secure">Session only</span>
+        </div>
+
+        <div class="submodule submodule-accent">
+          <div class="submodule-title-row">
+            <label for="apiKey">Admin API Key</label>
+            <span class="field-note">Stored in this browser tab only</span>
+          </div>
+          <input type="password" id="apiKey" placeholder="Paste your admin key" autocomplete="off" spellcheck="false">
+          <div class="access-note">
+            <span class="note-icon">i</span>
+            The key is kept in <code>sessionStorage</code> and sent as <code>X-Api-Key</code> on protected requests.
+          </div>
+        </div>
+      </section>
+
+      <!-- STATS MODULE -->
+      <section class="module" aria-labelledby="statsTitle">
+        <div class="module-header compact">
+          <div>
+            <p class="module-kicker">02 · Overview</p>
+            <h3 id="statsTitle">Resource Overview</h3>
+          </div>
+          <button class="button button-outline button-small" id="refreshOverviewBtn" type="button">Refresh overview</button>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-icon">R</span>
+            <div>
+              <span class="stat-label">Total Resources</span>
+              <strong class="stat-value" id="statResources">—</strong>
+            </div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">↓</span>
+            <div>
+              <span class="stat-label">Total Downloads</span>
+              <strong class="stat-value" id="statDownloads">—</strong>
+            </div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">24</span>
+            <div>
+              <span class="stat-label">Downloads · 24h</span>
+              <strong class="stat-value" id="statDownloads24h">—</strong>
+            </div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">C</span>
+            <div>
+              <span class="stat-label">Categories</span>
+              <strong class="stat-value" id="statCategories">—</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTENT MANAGEMENT MODULE -->
+      <section class="module" aria-labelledby="contentTitle">
+        <div class="module-header">
+          <div>
+            <p class="module-kicker">03 · Content management</p>
+            <h3 id="contentTitle">Build the Resource Library</h3>
+            <p>The main module is split into bordered submodules so each task has a clear visual boundary.</p>
+          </div>
+        </div>
+
+        <div class="workspace-grid">
+          <!-- RESOURCE SUBMODULE -->
+          <div class="submodule submodule-primary">
+            <div class="submodule-heading">
+              <div>
+                <span class="submodule-index">A</span>
+                <div>
+                  <h4>Add New Resource</h4>
+                  <p>Create a local PDF resource or link an existing hosted PDF.</p>
+                </div>
+              </div>
+              <span class="submodule-status">Core task</span>
+            </div>
+
+            <div id="message" class="message" role="status" aria-live="polite"></div>
+
+            <form id="resourceForm" class="form-grid">
+              <div class="field field-full">
+                <label for="title">Resource Title <span>*</span></label>
+                <input type="text" id="title" required maxlength="180" placeholder="e.g. Industrial Attachment Application Form 2026">
+              </div>
+
+              <div class="field field-full">
+                <label for="subCategory">Category &amp; Sub-Category <span>*</span></label>
+                <select id="subCategory" required>
+                  <option value="">Select Sub-Category</option>
+                </select>
+              </div>
+
+              <div class="field field-full">
+                <label for="description">Description <span>*</span></label>
+                <textarea id="description" required maxlength="1000" placeholder="Provide a concise summary of the document content..."></textarea>
+                <span class="field-note right" id="descriptionCount">0 / 1000</span>
+              </div>
+
+              <div class="field field-full">
+                <div class="field-label-row">
+                  <label>Source <span>*</span></label>
+                  <span class="field-note">PDF only · maximum 25MB on the backend</span>
+                </div>
+                <div class="source-toggle" role="radiogroup" aria-label="Resource source">
+                  <label class="source-option">
+                    <input type="radio" name="source" value="file" checked>
+                    <span class="source-option-text"><strong>Upload PDF</strong><small>Store on this server</small></span>
+                  </label>
+                  <label class="source-option">
+                    <input type="radio" name="source" value="url">
+                    <span class="source-option-text"><strong>Existing URL</strong><small>Use hosted PDF</small></span>
+                  </label>
+                </div>
+
+                <div id="fileSourceField" class="source-panel">
+                  <div class="file-drop" id="fileDrop" tabindex="0" role="button" aria-label="Choose PDF file">
+                    <div class="upload-icon">↑</div>
+                    <strong>Drop a PDF here</strong>
+                    <span>or click to browse</span>
+                    <div class="file-picked" id="filePicked">No file selected</div>
+                  </div>
+                  <input type="file" id="fileInput" accept="application/pdf,.pdf" hidden>
+                </div>
+
+                <div id="urlSourceField" class="source-panel" hidden>
+                  <input type="url" id="fileUrl" placeholder="https://storage.mfanobora.com/docs/example.pdf">
+                </div>
+              </div>
+
+              <div class="field field-full">
+                <label class="check-card">
+                  <input type="checkbox" id="isFeatured">
+                  <span>
+                    <strong>Feature this resource</strong>
+                    <small>Use the backend's featured flag for the public hero/banner.</small>
+                  </span>
+                </label>
+              </div>
+
+              <div class="form-actions field-full">
+                <button type="reset" class="button button-outline" id="resetResourceBtn">Clear</button>
+                <button type="submit" class="button button-primary" id="submitBtn">Add Resource</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- TAXONOMY SUBMODULES -->
+          <div class="stacked-submodules">
+            <div class="submodule submodule-secondary">
+              <div class="submodule-heading small">
+                <div>
+                  <span class="submodule-index">B</span>
+                  <div>
+                    <h4>Add Category</h4>
+                    <p>Create a top-level grouping.</p>
+                  </div>
+                </div>
+              </div>
+              <div id="categoryMessage" class="message" role="status" aria-live="polite"></div>
+              <form id="categoryForm" class="compact-form">
+                <div class="field">
+                  <label for="categoryName">Category Name <span>*</span></label>
+                  <input type="text" id="categoryName" required maxlength="120" placeholder="e.g. Youth Programmes">
+                </div>
+                <div class="field">
+                  <label for="categorySlug">Slug <span>*</span></label>
+                  <input type="text" id="categorySlug" required maxlength="120" placeholder="youth-programmes">
+                </div>
+                <button type="submit" class="button button-secondary" id="categorySubmitBtn">Add Category</button>
+              </form>
+            </div>
+
+            <div class="submodule submodule-secondary">
+              <div class="submodule-heading small">
+                <div>
+                  <span class="submodule-index">C</span>
+                  <div>
+                    <h4>Add Sub-Category</h4>
+                    <p>Attach a narrower grouping to a category.</p>
+                  </div>
+                </div>
+              </div>
+              <div id="subCategoryMessage" class="message" role="status" aria-live="polite"></div>
+              <form id="subCategoryForm" class="compact-form">
+                <div class="field">
+                  <label for="parentCategory">Parent Category <span>*</span></label>
+                  <select id="parentCategory" required>
+                    <option value="">Select Category</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="newSubCategoryName">Sub-Category Name <span>*</span></label>
+                  <input type="text" id="newSubCategoryName" required maxlength="120" placeholder="e.g. Attachment Guides">
+                </div>
+                <div class="field">
+                  <label for="newSubCategorySlug">Slug <span>*</span></label>
+                  <input type="text" id="newSubCategorySlug" required maxlength="120" placeholder="attachment-guides">
+                </div>
+                <button type="submit" class="button button-secondary" id="subCategorySubmitBtn">Add Sub-Category</button>
+              </form>
+            </div>
+
+            <div class="submodule submodule-secondary">
+              <div class="submodule-heading small">
+                <div>
+                  <span class="submodule-index">D</span>
+                  <div>
+                    <h4>Most Downloaded</h4>
+                    <p>Quick performance view from the download log.</p>
+                  </div>
+                </div>
+              </div>
+              <div id="topResourcesList" class="top-resources-list" aria-live="polite">
+                <div class="loading-state">Loading…</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- DANGER ZONE MODULE -->
+      <section class="module module-danger" aria-labelledby="dangerTitle">
+        <div class="module-header">
+          <div>
+            <p class="module-kicker">99 · Danger zone</p>
+            <h3 id="dangerTitle">Danger zone — destructive actions</h3>
+            <p class="hero-copy">Only use these if you know what you're doing. Actions here are irreversible.</p>
+          </div>
+          <span class="module-badge warning">Admin only</span>
+        </div>
+
+        <div class="workspace-grid">
+          <div class="submodule submodule-danger">
+            <h4>Delete all sample data</h4>
+            <p>Deletes categories, sub-categories, resources and download logs from the database and removes any locally uploaded files where <code>storage_type = 'local'</code>.</p>
+
+            <div class="field">
+              <button id="killAllBtn" type="button" class="button button-danger">Delete everything</button>
+              <button id="killPreviewBtn" type="button" class="button button-outline">Preview what would be deleted</button>
+            </div>
+            <div class="field-note">You will be required to confirm the action in a modal and type <code>YES_I_CONFIRM_DELETE_ALL</code>.</div>
+          </div>
+
+          <div class="submodule submodule-export">
+            <h4>Export connected CSV</h4>
+            <p>Download a connected CSV snapshot (resources joined to category + subcategory). Also stored in <code>database/exports/</code>.</p>
+            <div class="field">
+              <button id="exportCsvBtn" type="button" class="button button-outline">Export CSV</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- RESOURCE LIST MODULE -->
+      <section class="module" aria-labelledby="resourcesTitle">
+        <div class="module-header compact">
+          <div>
+            <p class="module-kicker">04 · Library</p>
+            <h3 id="resourcesTitle">Existing Resources</h3>
+            <p>Review storage type, downloads, visibility, and available actions.</p>
+          </div>
+          <div class="header-actions">
+            <span class="count-badge"><span id="resourceCount">0</span> resources</span>
+            <button class="button button-outline button-small" id="refreshResourcesBtn" type="button">Refresh</button>
+          </div>
+        </div>
+
+        <div class="submodule table-submodule">
+          <div class="table-scroll">
+            <table id="resourceTable">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Resource</th>
+                  <th>Category</th>
+                  <th>Storage</th>
+                  <th>Downloads</th>
+                  <th>Status</th>
+                  <th>Featured</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="resourceTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- DOWNLOAD LOGS MODULE -->
+      <section class="module" aria-labelledby="logsTitle">
+        <div class="module-header compact">
+          <div>
+            <p class="module-kicker">05 · Activity</p>
+            <h3 id="logsTitle">Download Logs</h3>
+            <p>Review recent downloads captured by the backend audit trail.</p>
+          </div>
+          <div class="header-actions">
+            <span class="count-badge"><span id="logCount">0</span> shown</span>
+            <button class="button button-outline button-small" id="refreshLogsBtn" type="button">Refresh</button>
+          </div>
+        </div>
+
+        <div class="submodule table-submodule">
+          <div class="table-scroll">
+            <table id="logsTable">
+              <thead>
+                <tr>
+                  <th>When</th>
+                  <th>Resource</th>
+                  <th>IP Address</th>
+                  <th>Referrer</th>
+                  <th>User Agent</th>
+                </tr>
+              </thead>
+              <tbody id="logsTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- INTEGRATED & UPGRADED FOOTER -->
+    <footer class="page-footer-expanded">
+        <div class="footer-container">
+            <div class="footer-brand-col">
+                <img src="logo.png" alt="Mfano Bora Logo" class="brand-mark-small">
+                <h4>Mfano Bora Africa</h4>
+                <p>Empowering Africa's Tech Future through world-class ICT training, industrial attachments, and digital innovation.</p>
+            </div>
+            <div class="footer-links-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="/hub/">The Hub</a></li>
+                    <li><a href="/awards/">Transport & Logistics Awards</a></li>
+                    <li><a href="/attachment/">Attachments</a></li>
+                    <li><a href="/contact-us/">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-meta-col">
+                <h4>Workspace</h4>
+                <p>Mfano Bora Resources Admin Panel</p>
+                <p class="meta-tag">Existing SQLite/API backend retained</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>&copy; 2026 Mfano Bora Africa Ltd. All Rights Reserved.</span>
+        </div>
+    </footer>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div id="dangerModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="dangerModalTitle" aria-modal="true">
+    <div class="modal-backdrop" id="dangerModalBackdrop"></div>
+    <div class="modal-panel" role="document">
+      <header class="modal-header">
+        <h3 id="dangerModalTitle">Confirm permanent deletion</h3>
+      </header>
+      <div class="modal-body">
+        <p>This will <strong>permanently delete</strong> all sample data and locally stored files from the database. This action cannot be undone.</p>
+        <p><strong>Type the exact phrase</strong> below to confirm:</p>
+        <label for="dangerConfirmInput" class="visually-hidden">Confirmation phrase</label>
+        <input id="dangerConfirmInput" type="text" placeholder="Type YES_I_CONFIRM_DELETE_ALL" autocomplete="off" />
+        <div class="modal-hint">Phrase is case-sensitive. Leading/trailing spaces are trimmed.</div>
+        <div id="dangerModalMsg" class="message" aria-live="polite"></div>
+      </div>
+      <footer class="modal-footer">
+        <button id="dangerCancelBtn" type="button" class="button">Cancel</button>
+        <button id="dangerConfirmBtn" type="button" class="button button-danger">Confirm delete</button>
+      </footer>
+    </div>
+  </div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>
