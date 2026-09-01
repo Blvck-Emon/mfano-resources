@@ -14,3 +14,5 @@ config/config.php
 admin/mfano bora test.html
 database/resource categories and subcategories.txt
 rpage/rpage_compiled_system.txt
+compile_system.py
+mfano-resources_compiled_system.txt
